@@ -14,6 +14,10 @@ _#DefaultLogLevel: "off"
 
 // Run `terraform CMD`
 #Run: {
+	// Terraform version
+	version?: string
+	// https://www.terraform.io/downloads
+
 	// Terraform source code
 	source: dagger.#FS
 
@@ -30,7 +34,7 @@ _#DefaultLogLevel: "off"
 	withinCmdArgs: [...string]
 
 	// Terraform workspace
-	workspace: string | *"default"
+	workspace?: string
 
 	// Data directory (i.e. ./.terraform)
 	dataDir: string | *".terraform"
@@ -52,7 +56,9 @@ _#DefaultLogLevel: "off"
 
 	// Joins user and internal environment variables
 	_thisEnv: env & withinEnv & {
-		TF_WORKSPACE:     workspace
+		if workspace != _|_ {
+			TF_WORKSPACE: workspace
+		}
 		TF_DATA_DIR:      dataDir
 		TF_LOG:           logLevel
 		TF_LOG_PATH:      logPath
@@ -60,9 +66,11 @@ _#DefaultLogLevel: "off"
 		TF_INPUT:         "0"
 	}
 
-	// Hashicorp Terraform container
-	container: #input: docker.#Image | #Image
-
+	container: #input: docker.#Image | #Image & {
+		if version != _|_ {
+			"version": version
+		}
+	}
 	// Run command within a container
 	_run: docker.#Build & {
 		steps: [
