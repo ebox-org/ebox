@@ -1,0 +1,19 @@
+mutation sendMsgTo($msgInput: MessageInput!) {
+	sendMessage(message: $msgInput) {
+		messageID
+		fromID
+		toID
+		messageType
+		content
+	}
+}
+
+query getMessage($toID: ID!) {
+	getMessage(toID: $toID) {
+		messageID
+		fromID
+		toID
+		messageType
+		content
+	}
+}

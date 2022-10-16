@@ -1,0 +1,116 @@
+
+schema
+  @link(url: "https://specs.apollo.dev/link/v1.0")
+  @link(url: "https://specs.apollo.dev/join/v0.2", for: EXECUTION)
+{
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}
+
+directive @join__field(graph: join__Graph!, requires: join__FieldSet, provides: join__FieldSet, type: String, external: Boolean, override: String, usedOverridden: Boolean) repeatable on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+
+directive @join__graph(name: String!, url: String!) on ENUM_VALUE
+
+directive @join__implements(graph: join__Graph!, interface: String!) repeatable on OBJECT | INTERFACE
+
+directive @join__type(graph: join__Graph!, key: join__FieldSet, extension: Boolean! = false, resolvable: Boolean! = true) repeatable on OBJECT | INTERFACE | UNION | ENUM | INPUT_OBJECT | SCALAR
+
+directive @link(url: String, as: String, for: link__Purpose, import: [link__Import]) repeatable on SCHEMA
+
+scalar join__FieldSet
+
+enum join__Graph {
+  LOCATION @join__graph(name: "location", url: "http://ebox-server-location/query")
+  MESSAGE @join__graph(name: "message", url: "http://ebox-server-message/query")
+  NODE @join__graph(name: "node", url: "http://ebox-server-node/query")
+}
+
+scalar link__Import
+
+enum link__Purpose {
+  """
+  `SECURITY` features provide metadata necessary to securely resolve fields.
+  """
+  SECURITY
+
+  """
+  `EXECUTION` features provide metadata necessary for operation execution.
+  """
+  EXECUTION
+}
+
+input LocationInput
+  @join__type(graph: LOCATION)
+{
+  nodeID: ID!
+  latitude: Float!
+  longitude: Float!
+}
+
+type Message
+  @join__type(graph: MESSAGE, key: "messageID")
+{
+  messageID: ID!
+  fromID: ID!
+  toID: ID!
+  messageType: String!
+  content: String!
+}
+
+input MessageInput
+  @join__type(graph: MESSAGE)
+{
+  fromID: ID!
+  toID: ID!
+  messageType: String!
+  content: String!
+}
+
+type Mutation
+  @join__type(graph: LOCATION)
+  @join__type(graph: MESSAGE)
+  @join__type(graph: NODE)
+{
+  upLocation(input: LocationInput!): Boolean! @join__field(graph: LOCATION)
+  sendMessage(message: MessageInput!): Message! @join__field(graph: MESSAGE)
+  upNode(node: NodeInput!): Node @join__field(graph: NODE)
+}
+
+type Nearby
+  @join__type(graph: LOCATION)
+{
+  node: Node! @join__field(graph: LOCATION, provides: "nodeID")
+  distance: Float!
+}
+
+type Node
+  @join__type(graph: LOCATION, key: "nodeID")
+  @join__type(graph: NODE, key: "nodeID")
+{
+  nodeID: ID! @join__field(graph: LOCATION, external: true) @join__field(graph: NODE)
+  name: String! @join__field(graph: NODE)
+}
+
+input NodeInput
+  @join__type(graph: NODE)
+{
+  name: String!
+  nodeId: ID
+}
+
+type Query
+  @join__type(graph: LOCATION)
+  @join__type(graph: MESSAGE)
+  @join__type(graph: NODE)
+{
+  findNearbyNodes(latitude: Float!, longitude: Float!): [Nearby] @join__field(graph: LOCATION)
+  getMessage(toID: ID!): [Message!]! @join__field(graph: MESSAGE)
+  node(nodeID: ID!): Node @join__field(graph: NODE)
+}
+
+type Subscription
+  @join__type(graph: MESSAGE)
+{
+  messageReceived(toID: ID!): Message!
+}

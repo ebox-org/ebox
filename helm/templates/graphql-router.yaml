@@ -1,0 +1,97 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "helm.server.graphql-router" .}}
+data:
+  # property-like keys; each key maps to a simple value
+  supergraph-config.yaml: |
+    federation_version: 2 # Without this line, Rover uses Federation 1
+    subgraphs:
+      node:
+        routing_url: http://{{- include "helm.server.node" .}}/query
+        schema:
+          file: ../graphql/node.graphql
+      location:
+        routing_url: http://{{- include "helm.server.location" .}}/query
+        schema:
+          file: ../graphql/locators/location.graphql
+      message:
+        routing_url: http://{{- include "helm.server.message" .}}/query
+        schema:
+          file: ../graphql/transporters/message.graphql
+  config.yaml: |
+    supergraph:
+      listen: 0.0.0.0:4000
+      introspection: true
+    cors:
+      allow_any_origin: true
+    include_subgraph_errors:
+      all: true # Propagate errors from all subraphs
+      # subgraphs:
+        # products: false # Do not propagate errors from the products subgraph
+    health-check:
+      listen: 0.0.0.0:4088
+      enabled: true
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "helm.server.graphql-router" .}}
+  labels:
+    app: {{ include "helm.server.graphql-router" .}}
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "helm.server.graphql-router" .}}
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: {{ include "helm.server.graphql-router" .}}
+    spec:
+      imagePullSecrets:
+        - name: dpr-secret
+      containers:
+        - name: {{ include "helm.server.graphql-router" .}}
+          image: ghcr.io/ebox-org/ebox-server-graphql-router:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 4000
+            - containerPort: 4088
+          volumeMounts:
+            - name: config
+              mountPath: /router/config
+              readOnly: true
+      restartPolicy: Always
+      volumes:
+      - name: config
+        configMap:
+          name: {{ include "helm.server.graphql-router" .}}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "helm.server.graphql-router" .}}
+  namespace: default
+spec:
+  selector:
+    app: {{ include "helm.server.graphql-router" .}}
+  type: LoadBalancer
+  ports:
+    - name: {{ include "helm.server.graphql-router" .}}
+      protocol: TCP
+      port: 4000
+      targetPort: 4000
+    - name: {{ include "helm.server.graphql-router" .}}-healthcheck
+      protocol: TCP
+      port: 4088
+      targetPort: 4088

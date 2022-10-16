@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "helm.web-app" .}}
+  labels:
+    app: {{ include "helm.web-app" .}}
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "helm.web-app" .}}
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: {{ include "helm.web-app" .}}
+    spec:
+      imagePullSecrets:
+        - name: dpr-secret
+      containers:
+        - name: {{ include "helm.web-app" .}}
+          image: ghcr.io/ebox-org/ebox-web-app:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+      restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "helm.web-app" .}}
+  namespace: default
+spec:
+  selector:
+    app: {{ include "helm.web-app" .}}
+  type: LoadBalancer
+  ports:
+    - name: {{ include "helm.web-app" .}}
+      protocol: TCP
+      port: 4000
+      targetPort: 80

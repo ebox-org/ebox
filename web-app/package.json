@@ -1,0 +1,51 @@
+{
+	"name": "webapp",
+	"version": "1.0.0",
+	"main": "index.js",
+	"license": "MIT",
+	"packageManager": "yarn@3.2.3",
+	"type": "module",
+	"scripts": {
+		"format": "rome format .",
+		"ci": "rome ci",
+		"dev": "vite --config ./misc/vite.config.ts",
+		"build": "vite --config ./misc/vite.config.ts build",
+		"generate": "graphql-codegen --config codegen.yml"
+	},
+	"devDependencies": {
+		"@apollo/client": "^3.7.0",
+		"@graphql-codegen/cli": "2.13.1",
+		"@graphql-codegen/introspection": "2.2.1",
+		"@graphql-codegen/typescript": "2.7.3",
+		"@graphql-codegen/typescript-operations": "2.5.3",
+		"@graphql-codegen/typescript-react-apollo": "3.3.3",
+		"@types/node": "^18.7.23",
+		"@types/react": "^18.0.21",
+		"@types/react-dom": "^18.0.6",
+		"@vitejs/plugin-react": "^2.1.0",
+		"graphql": "^16.6.0",
+		"rome": "next",
+		"typescript": "^4.8.4",
+		"vite": "^3.1.4"
+	},
+	"dependencies": {
+		"@emotion/react": "^11.10.4",
+		"@emotion/styled": "^11.10.4",
+		"@faker-js/faker": "^7.5.0",
+		"@fontsource/roboto": "^4.5.8",
+		"@mui/base": "^5.0.0-alpha.100",
+		"@mui/material": "^5.10.8",
+		"@xstate/inspect": "^0.7.0",
+		"@xstate/react": "^3.0.1",
+		"inversify": "^6.0.1",
+		"localforage": "^1.10.0",
+		"ok-value-error-reason": "^1.0.8",
+		"p-defer": "^4.0.0",
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0",
+		"reflect-metadata": "^0.1.13",
+		"tsyringe": "^4.7.0",
+		"xstate": "^4.33.6",
+		"zustand": "^4.1.1"
+	}
+}

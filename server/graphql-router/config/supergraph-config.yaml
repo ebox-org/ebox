@@ -1,0 +1,14 @@
+federation_version: 2 # Without this line, Rover uses Federation 1
+subgraphs:
+  node:
+    routing_url: http://ebox-server-node/query
+    schema:
+      file: ../graphql/node.graphql
+  location:
+    routing_url: http://ebox-server-location/query
+    schema:
+      file: ../graphql/locators/location.graphql
+  message:
+    routing_url: http://ebox-server-message/query
+    schema:
+      file: ../graphql/transporters/message.graphql

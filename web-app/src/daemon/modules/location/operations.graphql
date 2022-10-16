@@ -1,0 +1,3 @@
+mutation updateLocation($nodeID: ID!, $lat: Float!, $long: Float!) {
+	upLocation(input: { nodeID: $nodeID, latitude: $lat, longitude: $long })
+}
