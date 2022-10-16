@@ -26,5 +26,5 @@ jobs:
             project update
             do release -l=debug
         env:
-          REGISTRY_USERNAME: ebox-org-machine
+          REGISTRY_USERNAME: ${{ secrets.MACHINE_USER }}
           REGISTRY_PASSWORD: ${{ secrets.MACHINE_TOKEN }}
