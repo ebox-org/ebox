@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "helm.server.message" . }}
+  labels:
+    app: {{ include "helm.server.message" . }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "helm.server.message" . }}
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: {{ include "helm.server.message" . }}
+    spec:
+      imagePullSecrets:
+        - name: dpr-secret
+      containers:
+        - name: {{ include "helm.server.message" . }}
+          image: ghcr.io/ebox-org/ebox-server-message:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 4000
+          env:
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.serverMessage }}
+                  key: DB_HOST
+                  optional: false
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.serverMessage }}
+                  key: DB_PORT
+                  optional: false
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.serverMessage }}
+                  key: DB_USER
+                  optional: false
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.serverMessage }}
+                  key: DB_PASSWORD
+                  optional: false
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.serverMessage }}
+                  key: DB_NAME
+                  optional: false
+      restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "helm.server.message" . }}
+  namespace: default
+spec:
+  selector:
+    app: {{ include "helm.server.message" . }}
+  type: LoadBalancer
+  ports:
+    - name: {{ include "helm.server.message" . }}
+      protocol: TCP
+      port: 80
+      targetPort: 4000

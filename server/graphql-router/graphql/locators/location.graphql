@@ -1,0 +1,29 @@
+extend schema
+	@link(
+		url: "https://specs.apollo.dev/federation/v2.0"
+		import: ["@key", "@external", "@provides"]
+	)
+
+type Node @key(fields: "nodeID") {
+	nodeID: ID! @external
+}
+
+type Nearby {
+	# FIXME: This should return a location which can be node or group
+	node: Node! @provides(fields: "nodeID")
+	distance: Float!
+}
+
+extend type Query {
+	findNearbyNodes(latitude: Float!, longitude: Float!): [Nearby]
+}
+
+input LocationInput {
+	nodeID: ID!
+	latitude: Float!
+	longitude: Float!
+}
+
+extend type Mutation {
+	upLocation(input: LocationInput!): Boolean!
+}

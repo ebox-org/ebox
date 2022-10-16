@@ -1,0 +1,13 @@
+mutation register($name: String!) {
+	upNode(node: { name: $name }) {
+		nodeID
+		name
+	}
+}
+
+mutation updateName($id: ID!, $name: String!) {
+	upNode(node: { nodeId: $id, name: $name }) {
+		nodeID
+		name
+	}
+}

@@ -1,0 +1,10 @@
+query findNearByNodes($lat: Float!, $long: Float!) {
+	findNearbyNodes(latitude: $lat, longitude: $long) {
+		node {
+			nodeID
+			name
+		}
+
+		distance
+	}
+}

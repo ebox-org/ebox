@@ -1,0 +1,9 @@
+out/
+
+.env
+**/*.env*
+!*.env.template
+
+.goreload
+
+.DS_Store
