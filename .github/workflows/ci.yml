@@ -27,4 +27,4 @@ jobs:
             do release -l=debug
         env:
           REGISTRY_USERNAME: ${{ github.actor }}
-          REGISTRY_PASSWORD: ${{ secrets.DEV_TOKEN }}
+          REGISTRY_PASSWORD: ${{ secrets.MACHINE_TOKEN }}
