@@ -323,7 +323,7 @@ func (ec *executionContext) field_Mutation_upNode_args(ctx context.Context, rawA
 	var arg0 model.NodeInput
 	if tmp, ok := rawArgs["node"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("node"))
-		arg0, err = ec.unmarshalNNodeInput2githubᚗcomᚋebox-orgᚋeboxᚋserverᚋnodeᚋgraphᚋmodelᚐNodeInput(ctx, tmp)
+		arg0, err = ec.unmarshalNNodeInput2githubᚗcomᚋeboxᚑorgᚋeboxᚋserverᚋnodeᚋgraphᚋmodelᚐNodeInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -443,7 +443,7 @@ func (ec *executionContext) _Entity_findNodeByNodeID(ctx context.Context, field 
 	}
 	res := resTmp.(*model.Node)
 	fc.Result = res
-	return ec.marshalNNode2ᚖgithubᚗcomᚋebox-orgᚋeboxᚋserverᚋnodeᚋgraphᚋmodelᚐNode(ctx, field.Selections, res)
+	return ec.marshalNNode2ᚖgithubᚗcomᚋeboxᚑorgᚋeboxᚋserverᚋnodeᚋgraphᚋmodelᚐNode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Entity_findNodeByNodeID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -501,7 +501,7 @@ func (ec *executionContext) _Mutation_upNode(ctx context.Context, field graphql.
 	}
 	res := resTmp.(*model.Node)
 	fc.Result = res
-	return ec.marshalONode2ᚖgithubᚗcomᚋebox-orgᚋeboxᚋserverᚋnodeᚋgraphᚋmodelᚐNode(ctx, field.Selections, res)
+	return ec.marshalONode2ᚖgithubᚗcomᚋeboxᚑorgᚋeboxᚋserverᚋnodeᚋgraphᚋmodelᚐNode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_upNode(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -647,7 +647,7 @@ func (ec *executionContext) _Query_node(ctx context.Context, field graphql.Colle
 	}
 	res := resTmp.(*model.Node)
 	fc.Result = res
-	return ec.marshalONode2ᚖgithubᚗcomᚋebox-orgᚋeboxᚋserverᚋnodeᚋgraphᚋmodelᚐNode(ctx, field.Selections, res)
+	return ec.marshalONode2ᚖgithubᚗcomᚋeboxᚑorgᚋeboxᚋserverᚋnodeᚋgraphᚋmodelᚐNode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_node(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3391,11 +3391,11 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 	return res
 }
 
-func (ec *executionContext) marshalNNode2githubᚗcomᚋebox-orgᚋeboxᚋserverᚋnodeᚋgraphᚋmodelᚐNode(ctx context.Context, sel ast.SelectionSet, v model.Node) graphql.Marshaler {
+func (ec *executionContext) marshalNNode2githubᚗcomᚋeboxᚑorgᚋeboxᚋserverᚋnodeᚋgraphᚋmodelᚐNode(ctx context.Context, sel ast.SelectionSet, v model.Node) graphql.Marshaler {
 	return ec._Node(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNNode2ᚖgithubᚗcomᚋebox-orgᚋeboxᚋserverᚋnodeᚋgraphᚋmodelᚐNode(ctx context.Context, sel ast.SelectionSet, v *model.Node) graphql.Marshaler {
+func (ec *executionContext) marshalNNode2ᚖgithubᚗcomᚋeboxᚑorgᚋeboxᚋserverᚋnodeᚋgraphᚋmodelᚐNode(ctx context.Context, sel ast.SelectionSet, v *model.Node) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -3405,7 +3405,7 @@ func (ec *executionContext) marshalNNode2ᚖgithubᚗcomᚋebox-orgᚋeboxᚋser
 	return ec._Node(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNNodeInput2githubᚗcomᚋebox-orgᚋeboxᚋserverᚋnodeᚋgraphᚋmodelᚐNodeInput(ctx context.Context, v interface{}) (model.NodeInput, error) {
+func (ec *executionContext) unmarshalNNodeInput2githubᚗcomᚋeboxᚑorgᚋeboxᚋserverᚋnodeᚋgraphᚋmodelᚐNodeInput(ctx context.Context, v interface{}) (model.NodeInput, error) {
 	res, err := ec.unmarshalInputNodeInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -3830,7 +3830,7 @@ func (ec *executionContext) marshalOID2ᚖstring(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) marshalONode2ᚖgithubᚗcomᚋebox-orgᚋeboxᚋserverᚋnodeᚋgraphᚋmodelᚐNode(ctx context.Context, sel ast.SelectionSet, v *model.Node) graphql.Marshaler {
+func (ec *executionContext) marshalONode2ᚖgithubᚗcomᚋeboxᚑorgᚋeboxᚋserverᚋnodeᚋgraphᚋmodelᚐNode(ctx context.Context, sel ast.SelectionSet, v *model.Node) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}

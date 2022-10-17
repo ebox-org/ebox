@@ -303,7 +303,7 @@ func (ec *executionContext) field_Mutation_upLocation_args(ctx context.Context, 
 	var arg0 model.LocationInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNLocationInput2githubᚗcomᚋebox-orgᚋeboxᚋserverᚋlocationᚋgraphᚋmodelᚐLocationInput(ctx, tmp)
+		arg0, err = ec.unmarshalNLocationInput2githubᚗcomᚋeboxᚑorgᚋeboxᚋserverᚋlocationᚋgraphᚋmodelᚐLocationInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -487,7 +487,7 @@ func (ec *executionContext) _Nearby_node(ctx context.Context, field graphql.Coll
 	}
 	res := resTmp.(*model.Node)
 	fc.Result = res
-	return ec.marshalNNode2ᚖgithubᚗcomᚋebox-orgᚋeboxᚋserverᚋlocationᚋgraphᚋmodelᚐNode(ctx, field.Selections, res)
+	return ec.marshalNNode2ᚖgithubᚗcomᚋeboxᚑorgᚋeboxᚋserverᚋlocationᚋgraphᚋmodelᚐNode(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Nearby_node(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -620,7 +620,7 @@ func (ec *executionContext) _Query_findNearbyNodes(ctx context.Context, field gr
 	}
 	res := resTmp.([]*model.Nearby)
 	fc.Result = res
-	return ec.marshalONearby2ᚕᚖgithubᚗcomᚋebox-orgᚋeboxᚋserverᚋlocationᚋgraphᚋmodelᚐNearby(ctx, field.Selections, res)
+	return ec.marshalONearby2ᚕᚖgithubᚗcomᚋeboxᚑorgᚋeboxᚋserverᚋlocationᚋgraphᚋmodelᚐNearby(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_findNearbyNodes(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3365,12 +3365,12 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 	return res
 }
 
-func (ec *executionContext) unmarshalNLocationInput2githubᚗcomᚋebox-orgᚋeboxᚋserverᚋlocationᚋgraphᚋmodelᚐLocationInput(ctx context.Context, v interface{}) (model.LocationInput, error) {
+func (ec *executionContext) unmarshalNLocationInput2githubᚗcomᚋeboxᚑorgᚋeboxᚋserverᚋlocationᚋgraphᚋmodelᚐLocationInput(ctx context.Context, v interface{}) (model.LocationInput, error) {
 	res, err := ec.unmarshalInputLocationInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNNode2ᚖgithubᚗcomᚋebox-orgᚋeboxᚋserverᚋlocationᚋgraphᚋmodelᚐNode(ctx context.Context, sel ast.SelectionSet, v *model.Node) graphql.Marshaler {
+func (ec *executionContext) marshalNNode2ᚖgithubᚗcomᚋeboxᚑorgᚋeboxᚋserverᚋlocationᚋgraphᚋmodelᚐNode(ctx context.Context, sel ast.SelectionSet, v *model.Node) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -3784,7 +3784,7 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return res
 }
 
-func (ec *executionContext) marshalONearby2ᚕᚖgithubᚗcomᚋebox-orgᚋeboxᚋserverᚋlocationᚋgraphᚋmodelᚐNearby(ctx context.Context, sel ast.SelectionSet, v []*model.Nearby) graphql.Marshaler {
+func (ec *executionContext) marshalONearby2ᚕᚖgithubᚗcomᚋeboxᚑorgᚋeboxᚋserverᚋlocationᚋgraphᚋmodelᚐNearby(ctx context.Context, sel ast.SelectionSet, v []*model.Nearby) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -3811,7 +3811,7 @@ func (ec *executionContext) marshalONearby2ᚕᚖgithubᚗcomᚋebox-orgᚋebox�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalONearby2ᚖgithubᚗcomᚋebox-orgᚋeboxᚋserverᚋlocationᚋgraphᚋmodelᚐNearby(ctx, sel, v[i])
+			ret[i] = ec.marshalONearby2ᚖgithubᚗcomᚋeboxᚑorgᚋeboxᚋserverᚋlocationᚋgraphᚋmodelᚐNearby(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -3825,7 +3825,7 @@ func (ec *executionContext) marshalONearby2ᚕᚖgithubᚗcomᚋebox-orgᚋebox�
 	return ret
 }
 
-func (ec *executionContext) marshalONearby2ᚖgithubᚗcomᚋebox-orgᚋeboxᚋserverᚋlocationᚋgraphᚋmodelᚐNearby(ctx context.Context, sel ast.SelectionSet, v *model.Nearby) graphql.Marshaler {
+func (ec *executionContext) marshalONearby2ᚖgithubᚗcomᚋeboxᚑorgᚋeboxᚋserverᚋlocationᚋgraphᚋmodelᚐNearby(ctx context.Context, sel ast.SelectionSet, v *model.Nearby) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}

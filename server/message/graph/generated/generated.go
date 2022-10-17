@@ -398,7 +398,7 @@ func (ec *executionContext) field_Mutation_sendMessage_args(ctx context.Context,
 	var arg0 model.MessageInput
 	if tmp, ok := rawArgs["message"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("message"))
-		arg0, err = ec.unmarshalNMessageInput2githubᚗcomᚋebox-orgᚋeboxᚋserverᚋmessageᚋgraphᚋmodelᚐMessageInput(ctx, tmp)
+		arg0, err = ec.unmarshalNMessageInput2githubᚗcomᚋeboxᚑorgᚋeboxᚋserverᚋmessageᚋgraphᚋmodelᚐMessageInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -533,7 +533,7 @@ func (ec *executionContext) _Entity_findMessageByMessageID(ctx context.Context, 
 	}
 	res := resTmp.(*model.Message)
 	fc.Result = res
-	return ec.marshalNMessage2ᚖgithubᚗcomᚋebox-orgᚋeboxᚋserverᚋmessageᚋgraphᚋmodelᚐMessage(ctx, field.Selections, res)
+	return ec.marshalNMessage2ᚖgithubᚗcomᚋeboxᚑorgᚋeboxᚋserverᚋmessageᚋgraphᚋmodelᚐMessage(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Entity_findMessageByMessageID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -820,7 +820,7 @@ func (ec *executionContext) _Mutation_sendMessage(ctx context.Context, field gra
 	}
 	res := resTmp.(*model.Message)
 	fc.Result = res
-	return ec.marshalNMessage2ᚖgithubᚗcomᚋebox-orgᚋeboxᚋserverᚋmessageᚋgraphᚋmodelᚐMessage(ctx, field.Selections, res)
+	return ec.marshalNMessage2ᚖgithubᚗcomᚋeboxᚑorgᚋeboxᚋserverᚋmessageᚋgraphᚋmodelᚐMessage(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_sendMessage(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -887,7 +887,7 @@ func (ec *executionContext) _Query_getMessage(ctx context.Context, field graphql
 	}
 	res := resTmp.([]*model.Message)
 	fc.Result = res
-	return ec.marshalNMessage2ᚕᚖgithubᚗcomᚋebox-orgᚋeboxᚋserverᚋmessageᚋgraphᚋmodelᚐMessageᚄ(ctx, field.Selections, res)
+	return ec.marshalNMessage2ᚕᚖgithubᚗcomᚋeboxᚑorgᚋeboxᚋserverᚋmessageᚋgraphᚋmodelᚐMessageᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_getMessage(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1194,7 +1194,7 @@ func (ec *executionContext) _Subscription_messageReceived(ctx context.Context, f
 				w.Write([]byte{'{'})
 				graphql.MarshalString(field.Alias).MarshalGQL(w)
 				w.Write([]byte{':'})
-				ec.marshalNMessage2ᚖgithubᚗcomᚋebox-orgᚋeboxᚋserverᚋmessageᚋgraphᚋmodelᚐMessage(ctx, field.Selections, res).MarshalGQL(w)
+				ec.marshalNMessage2ᚖgithubᚗcomᚋeboxᚑorgᚋeboxᚋserverᚋmessageᚋgraphᚋmodelᚐMessage(ctx, field.Selections, res).MarshalGQL(w)
 				w.Write([]byte{'}'})
 			})
 		case <-ctx.Done():
@@ -3781,11 +3781,11 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 	return res
 }
 
-func (ec *executionContext) marshalNMessage2githubᚗcomᚋebox-orgᚋeboxᚋserverᚋmessageᚋgraphᚋmodelᚐMessage(ctx context.Context, sel ast.SelectionSet, v model.Message) graphql.Marshaler {
+func (ec *executionContext) marshalNMessage2githubᚗcomᚋeboxᚑorgᚋeboxᚋserverᚋmessageᚋgraphᚋmodelᚐMessage(ctx context.Context, sel ast.SelectionSet, v model.Message) graphql.Marshaler {
 	return ec._Message(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNMessage2ᚕᚖgithubᚗcomᚋebox-orgᚋeboxᚋserverᚋmessageᚋgraphᚋmodelᚐMessageᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Message) graphql.Marshaler {
+func (ec *executionContext) marshalNMessage2ᚕᚖgithubᚗcomᚋeboxᚑorgᚋeboxᚋserverᚋmessageᚋgraphᚋmodelᚐMessageᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Message) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -3809,7 +3809,7 @@ func (ec *executionContext) marshalNMessage2ᚕᚖgithubᚗcomᚋebox-orgᚋebox
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNMessage2ᚖgithubᚗcomᚋebox-orgᚋeboxᚋserverᚋmessageᚋgraphᚋmodelᚐMessage(ctx, sel, v[i])
+			ret[i] = ec.marshalNMessage2ᚖgithubᚗcomᚋeboxᚑorgᚋeboxᚋserverᚋmessageᚋgraphᚋmodelᚐMessage(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -3829,7 +3829,7 @@ func (ec *executionContext) marshalNMessage2ᚕᚖgithubᚗcomᚋebox-orgᚋebox
 	return ret
 }
 
-func (ec *executionContext) marshalNMessage2ᚖgithubᚗcomᚋebox-orgᚋeboxᚋserverᚋmessageᚋgraphᚋmodelᚐMessage(ctx context.Context, sel ast.SelectionSet, v *model.Message) graphql.Marshaler {
+func (ec *executionContext) marshalNMessage2ᚖgithubᚗcomᚋeboxᚑorgᚋeboxᚋserverᚋmessageᚋgraphᚋmodelᚐMessage(ctx context.Context, sel ast.SelectionSet, v *model.Message) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -3839,7 +3839,7 @@ func (ec *executionContext) marshalNMessage2ᚖgithubᚗcomᚋebox-orgᚋeboxᚋ
 	return ec._Message(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNMessageInput2githubᚗcomᚋebox-orgᚋeboxᚋserverᚋmessageᚋgraphᚋmodelᚐMessageInput(ctx context.Context, v interface{}) (model.MessageInput, error) {
+func (ec *executionContext) unmarshalNMessageInput2githubᚗcomᚋeboxᚑorgᚋeboxᚋserverᚋmessageᚋgraphᚋmodelᚐMessageInput(ctx context.Context, v interface{}) (model.MessageInput, error) {
 	res, err := ec.unmarshalInputMessageInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
