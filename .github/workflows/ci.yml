@@ -7,7 +7,7 @@ env:
   VAR: dagger
 
 jobs:
-  dagger:
+  CI:
     runs-on: ubuntu-latest
     steps:
       - name: Clone repository
@@ -26,5 +26,5 @@ jobs:
             project update
             do release -l=debug
         env:
-          REGISTRY_USERNAME: ${{ github.actor }}
-          REGISTRY_PASSWORD: ${{ secrets.DEV_TOKEN }}
+          REGISTRY_USERNAME: ${{ secrets.MACHINE_USER }}
+          REGISTRY_PASSWORD: ${{ secrets.MACHINE_TOKEN }}

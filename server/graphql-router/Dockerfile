@@ -1,4 +1,4 @@
-FROM ghcr.io/ebox-org/apollo-router-arm64:v1.1.0
+FROM ghcr.io/apollographql/router:v1.2.0
 
 COPY --chmod=765 ./bin /root/.rover/bin
 
