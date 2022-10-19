@@ -5,36 +5,37 @@ import (
     "pipes.local/types"
 )
 
-_AllModules: [...types.#Module]
 _AllModules: [
     {
         name: "web-app"
-        path: "web-app"
+        context: "client/web-app"
     },
     {
         name: "server-graphql-router"
-        path: "server/graphql-router"
+        context: "server/graphql-router"
     },
     {
         name: "server-node"
-        path: "server/node"
+        context: "server/node"
     },
     {
         name: "server-location"
-        path: "server/location"
+        context: "server/location"
     },
     {
         name: "server-message"
-        path: "server/message"
+        context: "server/message"
     },
     {
         name: "server-file"
-        path: "server/file"
+        context: "server/file"
     },
 ]
 
 AllModules: [...types.#Module]
 AllModules: [for k, v in _AllModules {
     name: v.name,
-    path: strings.TrimLeft(strings.TrimRight(v.path, "/"), "./"),
+    _context: strings.TrimLeft(strings.TrimRight(v.context, "/"), "./")
+    context: _context
+    dockerfile: _context + "/Dockerfile"
 }]

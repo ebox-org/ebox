@@ -30,10 +30,6 @@ dagger.#Plan & {
 	actions: {
 		build: acts.#BuildAll & {
 			workdir: _rootDir
-			auth: "ghcr.io": {
-				username: client.env.REGISTRY_USERNAME
-				secret:   client.env.REGISTRY_PASSWORD
-			}
 		}
 
 		release: acts.#ReleaseExp & {

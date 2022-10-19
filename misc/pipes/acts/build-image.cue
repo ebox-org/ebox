@@ -2,25 +2,19 @@ package acts
 
 import (
 	"dagger.io/dagger"
-	"dagger.io/dagger/core"
+	// "dagger.io/dagger/core"
 	"universe.dagger.io/docker"
 	"pipes.local/types"
 	"pipes.local/constants"
-
 )
+
 
 #BuildImage: {
 	workdir: dagger.#FS
 	_workdir: workdir
 
 	module: types.#Module
-
 	_module: module
-
-	_source: core.#Subdir & {
-		input: workdir
-		path: _module.path
-	}
 
 	auth?: [registry=string]: {
 		username: string
@@ -30,7 +24,15 @@ import (
 	_auth: auth
 
 	build: docker.#Dockerfile & {
-		source: _source.output
+		source: _workdir
+
+		buildArg: {
+			"-f": _module.context
+		}
+
+		dockerfile: {
+			path: _module.dockerfile
+		}
 
 		if auth != _|_ {
 			auth: _auth

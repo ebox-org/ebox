@@ -1,13 +1,13 @@
 FROM ghcr.io/apollographql/router:v1.2.0
 
-COPY --chmod=765 ./bin /root/.rover/bin
+COPY --chmod=765 ./server/graphql-router/bin /root/.rover/bin
 
 VOLUME [ "/router/config" ]
 
 WORKDIR /router
 
-COPY --chmod=765 ./entrypoint.sh ./entrypoint.sh
-COPY ./graphql ./graphql
+COPY --chmod=765 ./server/graphql-router/entrypoint.sh ./entrypoint.sh
+COPY ./server/graphql-router/graphql ./graphql
 
 ENTRYPOINT ["/router/entrypoint.sh"]
 
