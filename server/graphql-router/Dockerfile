@@ -1,12 +1,21 @@
-FROM ghcr.io/apollographql/router:v1.2.0
+FROM alpine as unzip
 
-COPY --chmod=765 ./server/graphql-router/bin /root/.rover/bin
+COPY ./server/graphql-router/bin.zip /rover/bin.zip
+
+RUN apk add --no-cache unzip
+
+RUN unzip /rover/bin.zip
+
+FROM ghcr.io/apollographql/router:v1.2.0 as final
+
+COPY --from=unzip --chmod=765 /rover/bin /root/.rover/bin
 
 VOLUME [ "/router/config" ]
 
 WORKDIR /router
 
 COPY --chmod=765 ./server/graphql-router/entrypoint.sh ./entrypoint.sh
+
 COPY ./server/graphql-router/graphql ./graphql
 
 ENTRYPOINT ["/router/entrypoint.sh"]
