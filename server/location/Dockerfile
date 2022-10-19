@@ -1,6 +1,6 @@
 FROM golang:1.18.2 AS builder
 WORKDIR /src
-COPY /    ./
+COPY ./server/location    ./
 RUN CGO_ENABLED=0 go build -o app .
 
 
