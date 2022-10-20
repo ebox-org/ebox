@@ -2,10 +2,11 @@ FROM alpine:3.16.2 as unzip
 
 COPY ./server/graphql-router/bin.zip /rover/bin.zip
 
-RUN apk update
-RUN apk add tar
+RUN apk add unzip wget curl
 
-RUN tar xvf /rover/bin.zip -C /rover/bin
+RUN mkdir -p /rover/bin
+
+RUN unzip /rover/bin.zip -d /rover/bin
 
 FROM ghcr.io/apollographql/router:v1.2.0 as final
 
