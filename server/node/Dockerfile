@@ -1,7 +1,6 @@
 FROM golang:1.18.2 AS builder
 WORKDIR /src
 COPY ./server/node    ./
-# RUN CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -o app .
 RUN CGO_ENABLED=0 GOOS=linux go build -o app .
 
 FROM alpine:latest  

@@ -1,12 +1,10 @@
-FROM ubuntu:kinetic as Unzipper
+FROM alpine:3.16 as Unzipper
 
 COPY ./server/graphql-router/bin.zip /rover/bin.zip
 
-RUN apt install unzip
+RUN apk add unzip
 
-# RUN mkdir -p /rover/bin
-
-RUN unzip /rover/bin.zip -d /rover/bin
+RUN unzip -d /rover/bin /rover/bin.zip
 
 FROM ghcr.io/apollographql/router:v1.2.0 as Final
 
