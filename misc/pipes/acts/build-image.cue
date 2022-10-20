@@ -39,9 +39,12 @@ import (
 		}
 
 		platforms: [
-			"linux/arm64",
-			"linux/amd64",
-			// "linux/riscv64",
+			"linux/arm64"
+			// Canot support multi-arch build for now
+			// See: https://github.com/dagger/dagger/issues/437
+
+			// "linux/amd64"
+			// "linux/riscv64"
 		]
 	}
 
