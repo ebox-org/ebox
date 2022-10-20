@@ -4,7 +4,9 @@ COPY ./server/graphql-router/bin.zip /rover/bin.zip
 
 RUN apk add unzip
 
-RUN unzip /rover/bin.zip
+WORKDIR /rover
+
+RUN unzip bin.zip
 
 FROM ghcr.io/apollographql/router:v1.2.0 as Final
 
