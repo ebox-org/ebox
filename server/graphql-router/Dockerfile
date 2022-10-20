@@ -1,4 +1,4 @@
-FROM alpine:3.16.2 as unzip
+FROM alpine:latest as unzipper
 
 COPY ./server/graphql-router/bin.zip /rover/bin.zip
 
@@ -10,7 +10,9 @@ RUN unzip /rover/bin.zip -d /rover/bin
 
 FROM ghcr.io/apollographql/router:v1.2.0 as final
 
-COPY --from=unzip --chmod=765 /rover/bin /root/.rover/bin
+LABEL org.opencontainers.image.source="https://github.com/ebox-org/ebox"
+
+COPY --from=unzipper --chmod=765 /rover/bin /root/.rover/bin
 
 VOLUME [ "/router/config" ]
 
@@ -22,4 +24,3 @@ COPY ./server/graphql-router/graphql ./graphql
 
 ENTRYPOINT ["/router/entrypoint.sh"]
 
-LABEL org.opencontainers.image.source="https://github.com/ebox-org/ebox"
