@@ -19,21 +19,13 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Install Dagger
+      - name: Dagger
         uses: dagger/dagger-for-github@v3
         with:
-          install-only: true
-
-      - name: Show Dagger version
-        run: dagger version
-
-      - name: Update
-        run: dagger do release -l=debug
-        working-directory: misc/pipes
-
-      - name: Release
-        run: dagger project update
-        working-directory: misc/pipes
+          cmds: |
+            project update
+            version
+            do release -l=debug
         env:
           REGISTRY_USERNAME: ${{ secrets.MACHINE_USER }}
           REGISTRY_PASSWORD: ${{ secrets.MACHINE_TOKEN }}
