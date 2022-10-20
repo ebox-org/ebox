@@ -1,8 +1,8 @@
-FROM alpine as unzip
+FROM alpine:3.16.2 as unzip
 
 COPY ./server/graphql-router/bin.zip /rover/bin.zip
 
-RUN apk add --no-cache unzip
+RUN apk add unzip
 
 RUN unzip /rover/bin.zip -d /rover/bin
 
