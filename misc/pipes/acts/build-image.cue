@@ -39,7 +39,7 @@ import (
 		}
 
 		platforms: [
-			"linux/arm64",
+			"linux/arm64"
 			"linux/amd64"
 			// "linux/riscv64",
 		]
