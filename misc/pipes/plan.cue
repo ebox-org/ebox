@@ -12,8 +12,9 @@ dagger.#Plan & {
 			"../../": read: {
 				contents: dagger.#FS,
 				exclude: [
-					"node_modules",
+					"node_modules"
 					"out/"
+					".git"
 				]
 			}
 
