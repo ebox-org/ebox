@@ -1,18 +1,18 @@
-FROM alpine:latest as unzipper
+FROM ubuntu:kinetic as Unzipper
 
 COPY ./server/graphql-router/bin.zip /rover/bin.zip
 
-RUN apk add unzip wget curl
+RUN apt install unzip
 
-RUN mkdir -p /rover/bin
+# RUN mkdir -p /rover/bin
 
 RUN unzip /rover/bin.zip -d /rover/bin
 
-FROM ghcr.io/apollographql/router:v1.2.0 as final
+FROM ghcr.io/apollographql/router:v1.2.0 as Final
 
 LABEL org.opencontainers.image.source="https://github.com/ebox-org/ebox"
 
-COPY --from=unzipper --chmod=765 /rover/bin /root/.rover/bin
+COPY --from=Unzipper --chmod=765 /rover/bin /root/.rover/bin
 
 VOLUME [ "/router/config" ]
 
