@@ -4,7 +4,7 @@ metadata:
   name: {{ include "helm.ingress-route" . }}
 spec:
   entryPoints:                      # [1]
-    - web
+  - web
   routes:                           # [2]
   - kind: Rule
     match: Host(`{{ .Values.hostname }}`) && PathPrefix(`/web`) # [3]

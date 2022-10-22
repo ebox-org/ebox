@@ -79,3 +79,69 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 # {{- list (include "helm.fullname" .) "server-node" | join "-" -}}
+
+{{- define "helm.routes._match" -}}
+  {{- if eq .kind "hostname" }}
+    {{- printf "Host(`{{ %s }}`)" .value }}
+  {{- else if eq .kind "subdomain-of" }}
+    {{- printf "HostRegexp(`{subdomain:.+?}.%s`)" .value}}
+  {{- else }}
+    {{- printf "unknown" }}
+  {{- end }}
+{{- end }}
+
+
+
+{{/*
+{{- define "helm.routes._route" -}}
+- kind: Rule
+  match: {{ $match }} && PathPrefix(`/web`)
+  middlewares:
+  - name: test
+  services:
+  - kind: Service
+    name: {{- include "helm.web-app" . }}
+    passHostHeader: true
+    port: 4000
+{{- end}}
+*/}}
+
+{{- define "helm.routes" -}}
+  {{-  range $k, $d := .Values.domains -}}
+{{- $match := include "helm.routes._match" $d }}
+- kind: Rule
+  match: {{ $match }} && PathPrefix(`/web`)
+  middlewares:
+    - name: test
+      services:
+      - kind: Service
+        name: test
+        passHostHeader: true
+        port: 4000
+  {{- end }}
+{{- end }}
+
+{{- /*
+# {{- define "helm.routes" -}}
+  # - "test"
+  # {{- printf "%s-test" "my" }}
+  # {{-  range $k, $d := .Values.domains }}
+  #   {{- printf "%s-test" "my" }}
+
+    # {{- $v := $d.value }}
+    # {{- $match := include "helm.routes._match" $d }}
+    # - kind: Rule
+    #   match: {{- printf "%s && PathPrefix(`/web`)" $match }} # [3]
+    #   priority: 30                    # [4]
+    #   middlewares:
+    #   - name: {{ include "helm.ingress-route" . }}-replace-web
+    #   services:                       # [8]
+    #   - kind: Service
+    #     name: {{ include "helm.web-app" .}}
+    #     passHostHeader: true
+    #     port: 4000                      # [9]
+  # {{- end }}
+
+# {{- end }}
+
+*/ -}}

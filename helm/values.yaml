@@ -37,7 +37,15 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
-hostname:
+hostname: ebox.com
+
+domains:
+  - 
+    kind: "hostname"
+    value: "example.com"
+  - 
+    kind: "subdomain-of"
+    value: "ngrok.io"
 
 seaweedfs:
   master:
