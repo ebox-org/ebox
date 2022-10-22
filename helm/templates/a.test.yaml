@@ -1,8 +1,0 @@
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
-metadata:
-  name: {{ include "helm.ingress-route" . }}
-spec:
-  entryPoints:                      # [1]
-  - web
-  routes: {{- include "helm.routes" . | indent 4 }}

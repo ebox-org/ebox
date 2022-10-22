@@ -50,9 +50,21 @@ app.kubernetes.io/name: {{ include "helm.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
-{{- define "helm.ingress-route" -}}
+{{- define "helm.ingressRoute" }}
 {{- printf "%s-ingress-route" (include "helm.fullname" .) -}}
 {{- end }}
+
+{{- define "helm.ingressMiddleware.replaceWeb" -}}
+{{- printf "%s-replace-web" (include "helm.ingressRoute" .) -}}
+{{- end }}
+
+{{- define "helm.ingressMiddleware.replaceGraphql" -}}
+{{- printf "%s-replace-graphql-server" (include "helm.ingressRoute" .) -}}
+{{- end}}
+
+{{- define "helm.ingressMiddleware.replaceFile" -}}
+{{- printf "%s-replace-file" (include "helm.ingressRoute" .) -}}
+{{- end}}
 
 {{- define "helm.web-app" -}}
 {{- printf "%s-web-app" (include "helm.fullname" .) -}}
@@ -78,8 +90,6 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- printf "%s-server-file" (include "helm.fullname" .) -}}
 {{- end }}
 
-# {{- list (include "helm.fullname" .) "server-node" | join "-" -}}
-
 {{- define "helm.routes._match" -}}
   {{- if eq .kind "hostname" }}
     {{- printf "Host(`{{ %s }}`)" .value }}
@@ -91,57 +101,41 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 
-
-{{/*
-{{- define "helm.routes._route" -}}
-- kind: Rule
-  match: {{ $match }} && PathPrefix(`/web`)
-  middlewares:
-  - name: test
-  services:
-  - kind: Service
-    name: {{- include "helm.web-app" . }}
-    passHostHeader: true
-    port: 4000
-{{- end}}
-*/}}
-
 {{- define "helm.routes" -}}
+{{- $root := . }}
+{{- $fullname := include "helm.fullname" $root }}
   {{-  range $k, $d := .Values.domains -}}
+
 {{- $match := include "helm.routes._match" $d }}
 - kind: Rule
   match: {{ $match }} && PathPrefix(`/web`)
   middlewares:
-    - name: test
-      services:
-      - kind: Service
-        name: test
-        passHostHeader: true
-        port: 4000
+  - name: {{ include "helm.ingressMiddleware.replaceWeb" $root }}
+  services:
+  - kind: Service
+    name: {{ include "helm.web-app" $root }}
+    passHostHeader: true
+    port: 4000
+- kind: Rule
+  match: {{ $match }} && PathPrefix(`/graphql-router`)
+  priority: 40
+  middlewares:
+  - name: {{ include "helm.ingressMiddleware.replaceGraphql" $root }}
+  services:
+  - kind: Service
+    name: {{ include "helm.server.graphql-router" $root }}
+    passHostHeader: true
+    port: 4000
+- kind: Rule
+  match: {{ $match }} && PathPrefix(`/file`)
+  priority: 40
+  middlewares:
+  - name: {{ include "helm.ingressMiddleware.replaceFile" $root }}
+  services:
+  - kind: Service
+    name: {{ include "helm.server.file" $root }}
+    passHostHeader: true
+    port: 4000
+
   {{- end }}
 {{- end }}
-
-{{- /*
-# {{- define "helm.routes" -}}
-  # - "test"
-  # {{- printf "%s-test" "my" }}
-  # {{-  range $k, $d := .Values.domains }}
-  #   {{- printf "%s-test" "my" }}
-
-    # {{- $v := $d.value }}
-    # {{- $match := include "helm.routes._match" $d }}
-    # - kind: Rule
-    #   match: {{- printf "%s && PathPrefix(`/web`)" $match }} # [3]
-    #   priority: 30                    # [4]
-    #   middlewares:
-    #   - name: {{ include "helm.ingress-route" . }}-replace-web
-    #   services:                       # [8]
-    #   - kind: Service
-    #     name: {{ include "helm.web-app" .}}
-    #     passHostHeader: true
-    #     port: 4000                      # [9]
-  # {{- end }}
-
-# {{- end }}
-
-*/ -}}
