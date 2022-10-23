@@ -92,7 +92,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 
 {{- define "helm.routes._match" -}}
   {{- if eq .kind "hostname" }}
-    {{- printf "Host(`{{ %s }}`)" .value }}
+    {{- printf "Host(`%s`)" .value }}
   {{- else if eq .kind "subdomain-of" }}
     {{- printf "HostRegexp(`{subdomain:.+?}.%s`)" .value}}
   {{- else }}
