@@ -1,0 +1,30 @@
+overwrite: true
+schema: "../../server/graphql-router/supergraph.graphql"
+generates:
+  src/modules/node-map/operations.generated.tsx:
+    documents: "src/modules/node-map/**/*.graphql"
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-apollo"
+  src/modules/node/operations.generated.tsx:
+    documents: "src/modules/node/**/*.graphql"
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-apollo"
+  src/modules/location/operations.generated.tsx:
+    documents: "src/modules/location/**/*.graphql"
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-apollo"
+  src/modules/message/operations.generated.tsx:
+    documents: "src/modules/message/**/*.graphql"
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-apollo"
+  # ./graphql.schema.json:
+  #   plugins:
+  #     - "introspection"
