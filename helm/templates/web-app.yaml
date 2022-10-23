@@ -23,7 +23,7 @@ spec:
         - name: dpr-secret
       containers:
         - name: {{ include "helm.web-app" .}}
-          image: ghcr.io/ebox-org/ebox-web-app:latest
+          image: ghcr.io/ndthanhdev/x2258-web-app:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 80
