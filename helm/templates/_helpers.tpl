@@ -136,6 +136,15 @@ app.kubernetes.io/instance: {{ .Release.Name }}
     name: {{ include "helm.server.file" $root }}
     passHostHeader: true
     port: 4000
+- kind: Rule
+  match: {{ $match }}
+  middlewares:
+  - name: {{ include "helm.ingressMiddleware.replaceWeb" $root }}
+  services:
+  - kind: Service
+    name: {{ include "helm.web-app" $root }}
+    passHostHeader: true
+    port: 4000
 
   {{- end }}
 {{- end }}
