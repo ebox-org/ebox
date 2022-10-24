@@ -35,7 +35,7 @@ import (
 			"\(v.name)": docker.#Push & {
 				image: build["\(v.name)"].output
 
-				dest: "ghcr.io/ndthanhdev/x2258-\(v.name)"
+				dest: "ghcr.io/ebox-org/ebox-\(v.name)"
 
 				auth: _auth
 			}

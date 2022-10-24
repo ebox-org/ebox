@@ -60,7 +60,7 @@ spec:
         - name: dpr-secret
       containers:
         - name: {{ include "helm.server.graphql-router" .}}
-          image: ghcr.io/ndthanhdev/x2258-server-graphql-router:latest
+          image: ghcr.io/ebox-org/ebox-server-graphql-router:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 4000

@@ -23,7 +23,7 @@ spec:
         - name: dpr-secret
       containers:
         - name: {{ include "helm.server.node" . }}
-          image: ghcr.io/ndthanhdev/x2258-server-node:latest
+          image: ghcr.io/ebox-org/ebox-server-node:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 4000
