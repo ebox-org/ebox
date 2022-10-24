@@ -1,84 +1,17 @@
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: {{ include "helm.ingress-route" . }}
+  name: {{ include "helm.ingressRoute" . }}
 spec:
   entryPoints:                      # [1]
-    - web
-  routes:                           # [2]
-  - kind: Rule
-    match: Host(`{{ .Values.hostname }}`) && PathPrefix(`/web`) # [3]
-    priority: 30                    # [4]
-    middlewares:
-    - name: {{ include "helm.ingress-route" . }}-replace-web
-    services:                       # [8]
-    - kind: Service
-      name: {{ include "helm.web-app" .}}
-      passHostHeader: true
-      port: 4000                      # [9]
-  - kind: Rule
-    match: Host(`{{ .Values.hostname }}`) && PathPrefix(`/graphql-router`) # [3]
-    priority: 40                    # [4]
-    middlewares:
-    - name: {{ include "helm.ingress-route" . }}-replace-graphql-router
-    services:                       # [8]
-    - kind: Service
-      name: {{ include "helm.server.graphql-router" .}}
-      passHostHeader: true
-      port: 4000                      # [9]
-  - kind: Rule
-    match: Host(`{{ .Values.hostname }}`) && PathPrefix(`/file`) # [3]
-    priority: 40                    # [4]
-    middlewares:
-    - name: {{ include "helm.ingress-route" . }}-replace-file
-    services:                       # [8]
-    - kind: Service
-      name: {{ include "helm.server.file" .}}
-      passHostHeader: true
-      port: 80                      # [9]
-  - kind: Rule
-    match: Host(`{{ .Values.hostname }}`) # [3]
-    priority: 10                    # [4]
-    services:                       # [8]
-    - kind: Service
-      name: {{ include "helm.web-app" .}}
-      passHostHeader: true
-      port: 4000                      # [9]
-  # ngrok
-  - kind: Rule
-    match: HostRegexp(`{subdomain:.+?}.ngrok.io`) && PathPrefix(`/graphql-router`) # [3]
-    priority: 20                    # [4]
-    middlewares:
-    - name: {{ include "helm.ingress-route" . }}-replace-graphql-router
-    services:                       # [8]
-    - kind: Service
-      name: {{ include "helm.server.graphql-router" .}}
-      passHostHeader: true
-      port: 4000                      # [9]
-  - kind: Rule
-    match: HostRegexp(`{subdomain:.+?}.ngrok.io`) && PathPrefix(`/file`) # [3]
-    priority: 20                    # [4]
-    middlewares:
-    - name: {{ include "helm.ingress-route" . }}-replace-file
-    services:                       # [8]
-    - kind: Service
-      name: {{ include "helm.server.file" .}}
-      passHostHeader: true
-      port: 80                      # [9]
-  - kind: Rule
-    match: HostRegexp(`{subdomain:.+?}.ngrok.io`) # [3]
-    priority: 10                    # [4]
-    services:                       # [8]
-    - kind: Service
-      name: {{ include "helm.web-app" .}}
-      passHostHeader: true
-      port: 4000                      # [9]
+  - web
+  routes: {{- include "helm.routes" . | indent 4 }}
 
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: {{ include "helm.ingress-route" . }}-replace-web
+  name: {{ include "helm.ingressMiddleware.replaceWeb" . }}
 spec:
   replacePathRegex:
     regex: ^/web(/|$)(.*)
@@ -88,7 +21,7 @@ spec:
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: {{ include "helm.ingress-route" . }}-replace-graphql-router
+  name: {{ include "helm.ingressMiddleware.replaceGraphql" . }}
 spec:
   replacePathRegex:
     regex: ^/graphql-router(/|$)(.*)
@@ -97,7 +30,7 @@ spec:
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: {{ include "helm.ingress-route" . }}-replace-file
+  name: {{ include "helm.ingressMiddleware.replaceFile" . }}
 spec:
   replacePathRegex:
     regex: ^/file(/|$)(.*)
