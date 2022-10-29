@@ -8,7 +8,8 @@ WORKDIR /rover
 
 RUN unzip bin.zip
 
-FROM ghcr.io/apollographql/router:v1.2.0 as Final
+# FROM ghcr.io/apollographql/router:v1.2.0 as Final
+FROM ghcr.io/ndthanhdev/apollo-router-arm64:v1.1.0 as Final
 
 LABEL org.opencontainers.image.source="https://github.com/ebox-org/ebox"
 
@@ -18,9 +19,8 @@ VOLUME [ "/router/config" ]
 
 WORKDIR /router
 
-COPY --chmod=765 ./server/graphql-router/entrypoint.sh ./entrypoint.sh
-
 COPY ./server/graphql-router/graphql ./graphql
 
-ENTRYPOINT ["/router/entrypoint.sh"]
+COPY --chmod=765 ./server/graphql-router/entrypoint.sh ./entrypoint.sh
 
+ENTRYPOINT ["/router/entrypoint.sh"]

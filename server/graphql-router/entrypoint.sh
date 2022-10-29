@@ -8,4 +8,5 @@ export APOLLO_ELV2_LICENSE=accept
 
 cat /router/supergraph.graphql
 
-/dist/router -c /router/config/config.yaml -s /router/supergraph.graphql --hot-reload
+# /dist/router -c /router/config/config.yaml -s /router/supergraph.graphql --hot-reload
+/router/router -c /router/config/config.yaml -s /router/supergraph.graphql --hot-reload
