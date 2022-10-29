@@ -89,7 +89,7 @@ spec:
   ports:
     - name: {{ include "helm.server.graphql-router" .}}
       protocol: TCP
-      port: 4000
+      port: 80
       targetPort: 4000
     - name: {{ include "helm.server.graphql-router" .}}-healthcheck
       protocol: TCP

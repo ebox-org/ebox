@@ -115,7 +115,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
   - kind: Service
     name: {{ include "helm.web-app" $root }}
     passHostHeader: true
-    port: 4000
+    port: 80
 - kind: Rule
   match: {{ $match }} && PathPrefix(`/graphql-router`)
   priority: 40
@@ -125,7 +125,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
   - kind: Service
     name: {{ include "helm.server.graphql-router" $root }}
     passHostHeader: true
-    port: 4000
+    port: 80
 - kind: Rule
   match: {{ $match }} && PathPrefix(`/file`)
   priority: 40
@@ -135,7 +135,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
   - kind: Service
     name: {{ include "helm.server.file" $root }}
     passHostHeader: true
-    port: 4000
+    port: 80
 - kind: Rule
   match: {{ $match }}
   middlewares:
@@ -144,7 +144,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
   - kind: Service
     name: {{ include "helm.web-app" $root }}
     passHostHeader: true
-    port: 4000
+    port: 80
 
   {{- end }}
 {{- end }}
