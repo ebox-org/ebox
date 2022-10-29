@@ -42,5 +42,5 @@ spec:
   ports:
     - name: {{ include "helm.web-app" .}}
       protocol: TCP
-      port: 4000
+      port: 80
       targetPort: 80
