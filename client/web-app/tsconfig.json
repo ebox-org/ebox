@@ -21,7 +21,7 @@
 		"emitDecoratorMetadata": true,
 		"baseUrl": ".",
 		"paths": {
-			"@ebox/daemon": ["./src/daemon"]
+			"@ebox/daemon": ["../daemon/src"]
 		}
 	},
 	"include": ["src"],

@@ -2,7 +2,7 @@ import * as React from "react";
 import { useActor, useSelector } from "@xstate/react";
 import { Daemon, useDaemonActor } from "../../state-machine";
 import { ActorRef, ActorRefFrom } from "xstate";
-import { MessageMachine, SendMachine } from "src/daemon/modules/message";
+import { MessageMachine, SendMachine } from "@ebox/daemon";
 import {
 	FormControl,
 	FormControlLabel,

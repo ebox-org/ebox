@@ -2,7 +2,7 @@ import * as React from "react";
 import { useActor, useSelector } from "@xstate/react";
 import { useDaemonActor } from "../../state-machine";
 import { ActorRef, ActorRefFrom } from "xstate";
-import { Message, MessageMachine } from "src/daemon/modules/message";
+import { Message, MessageMachine } from "@ebox/daemon";
 
 export const MessageList = () => {
 	const nodeRef = useDaemonActor((s) => {
