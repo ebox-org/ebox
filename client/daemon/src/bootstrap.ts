@@ -3,6 +3,8 @@ import { createRootMachine } from "./modules/root";
 import { inspect } from "@xstate/inspect";
 import { Container, inject, injectable } from "inversify";
 import { SendMessageModule } from "./modules/send-message";
+import { RootMachineModule } from "./modules/root/root";
+import { DaemonModule } from "./daemon";
 
 inspect({
 	// options
@@ -17,7 +19,11 @@ export class Boostrapper {
 		this.container = new Container();
 	}
 
-	static readonly modules = [SendMessageModule];
+	static readonly modules = [
+		DaemonModule,
+		RootMachineModule,
+		SendMessageModule,
+	];
 
 	private bindAll() {
 		Boostrapper.modules.forEach((module) => {
@@ -30,6 +36,3 @@ export class Boostrapper {
 		return this.container.resolve(Daemon);
 	}
 }
-
-@injectable()
-export class Daemon {}

@@ -2,7 +2,7 @@ import { inject, injectable, interfaces } from "inversify";
 import { createMachine, sendParent } from "xstate";
 import { DaemonContainer2 } from "../../container2";
 
-import * as Ports from "../../ports2";
+import * as Ports from "../../ports";
 
 import * as Op from "./operations.generated";
 

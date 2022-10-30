@@ -1,3 +1,5 @@
+import { Container, inject, interfaces } from "inversify";
+import { injectable } from "tsyringe";
 import {
 	ActorRef,
 	assign,
@@ -7,7 +9,8 @@ import {
 	ActorRefFrom,
 } from "xstate";
 import { DaemonContainer } from "../../container";
-import * as Ports from "../../_ports";
+import { DaemonModule } from "../../internals/interfaces";
+import * as Ports from "../../ports";
 import { createMessageMachine, MessageMachine } from "../message";
 import { createNodeMachine, NodeMachine } from "../node";
 import { createNodeMapMachine, NodeMapMachine } from "../node-map/machine";
@@ -17,8 +20,10 @@ export interface RootMachineCtx {
 	nodeMapRef?: ActorRefFrom<NodeMapMachine>;
 }
 
-export const createRootMachine = (container: DaemonContainer) => {
-	const logger = container.get(Ports.LoggerFactory).createLogger("daemon");
+export const createRootMachine = (ctx: interfaces.Context) => () => {
+	const logger = ctx.container
+		.get<Ports.LoggerFactory>(Ports.LoggerFactory)
+		.createLogger("daemon");
 
 	return createMachine<RootMachineCtx>(
 		{
@@ -77,12 +82,12 @@ export const createRootMachine = (container: DaemonContainer) => {
 			actions: {
 				spawnNodeMachine: assign<RootMachineCtx>(() => {
 					return {
-						nodeRef: spawn(createNodeMachine(container), "node"),
+						// nodeRef: spawn(createNodeMachine(ctx.container), "node"),
 					};
 				}),
 				spawnNodeMapMachine: assign<RootMachineCtx>(() => {
 					return {
-						nodeMapRef: spawn(createNodeMapMachine(container), "nodeMap"),
+						// nodeMapRef: spawn(createNodeMapMachine(ctx.container), "nodeMap"),
 					};
 				}),
 			},
@@ -107,4 +112,23 @@ export const createRootMachine = (container: DaemonContainer) => {
 	);
 };
 
-export type RootMachine = ActorRefFrom<typeof createRootMachine>;
+export const RootMachineFactory = Symbol("RootMachineFactory");
+export type RootMachineFactory = typeof createRootMachine;
+
+export type RootMachineRef = ActorRefFrom<typeof createRootMachine>;
+
+@injectable()
+class Root {
+	@inject<RootMachineFactory>(RootMachineFactory)
+	private rootMachineFactory!: RootMachineFactory;
+}
+
+export const RootMachineModule: DaemonModule = {
+	setup(container: Container) {
+		container
+			.bind<RootMachineFactory>(RootMachineFactory)
+			.toFactory(createRootMachine);
+
+		container.bind<Root>(Root).toSelf();
+	},
+};

@@ -1,7 +1,7 @@
 import { Container, inject, injectable, interfaces } from "inversify";
 import { createMachine, sendParent } from "xstate";
 
-import * as Ports from "../../ports2";
+import * as Ports from "../../ports";
 import { DaemonModule } from "../../internals/interfaces";
 
 import * as Op from "../message/operations.generated";

@@ -1,7 +1,7 @@
 import { over } from "ok-value-error-reason";
 import { assign, createMachine } from "xstate";
 import { DaemonContainer } from "../../container";
-import * as Ports from "../../ports";
+import * as Ports from "../../_ports";
 import {
 	FindNearByNodesDocument,
 	FindNearByNodesQueryVariables,
