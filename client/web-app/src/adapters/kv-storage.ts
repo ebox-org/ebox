@@ -1,6 +1,7 @@
 import localforage from "localforage";
 import { WebAppContainer } from "../container";
-import { injectable, Ports } from "@ebox/daemon";
+import { Ports } from "@ebox/daemon";
+import { injectable } from "inversify";
 
 class KVGroupImpl implements Ports.KVGroup {
 	private _forage;

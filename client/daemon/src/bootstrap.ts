@@ -2,9 +2,10 @@ import { interpret } from "xstate";
 import { createRootMachine } from "./modules/root";
 import { inspect } from "@xstate/inspect";
 import { Container, inject, injectable } from "inversify";
-import { SendMessageModule } from "./modules/send-message";
-import { RootMachineModule } from "./modules/root/root";
-import { DaemonModule } from "./daemon";
+// import { SendMessageModule } from "./modules/send-message";
+import { RootModule } from "./modules/root/root";
+import { DaemonModule, Daemon } from "./daemon";
+// import { NodeModule } from "./modules/node";
 
 inspect({
 	// options
@@ -21,8 +22,9 @@ export class Boostrapper {
 
 	static readonly modules = [
 		DaemonModule,
-		RootMachineModule,
-		SendMessageModule,
+		RootModule,
+		// NodeModule,
+		// SendMessageModule,
 	];
 
 	private bindAll() {

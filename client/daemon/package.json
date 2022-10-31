@@ -43,7 +43,6 @@
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
 		"reflect-metadata": "^0.1.13",
-		"tsyringe": "^4.7.0",
 		"xstate": "^4.33.6",
 		"zustand": "^4.1.1"
 	}

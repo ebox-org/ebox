@@ -1,5 +1,5 @@
 import { interpret, Interpreter } from "xstate";
-import { createRootMachine, RootMachine, RootMachineCtx } from "./modules/root";
+import { Root } from "./modules/root";
 import { DaemonContainer } from "./container";
 import { inspect } from "@xstate/inspect";
 import { createUploadMachine } from "./modules/upload/machine";
@@ -10,11 +10,18 @@ import { NodeDaemon } from "./modules/node";
 
 @injectable()
 export class Daemon {
-	@inject<NodeDaemon>(NodeDaemon)
-	private node!: NodeDaemon;
+	// @inject<NodeDaemon>(NodeDaemon)
+	// private node!: NodeDaemon;
 
-	get Node() {
-		return this.node;
+	// get Node() {
+	// 	return this.node;
+	// }
+
+	@inject<Root>(Root)
+	private root!: Root;
+
+	get Root() {
+		return this.root;
 	}
 }
 

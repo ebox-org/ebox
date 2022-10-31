@@ -1,5 +1,6 @@
 import { WebAppContainer } from "../container";
-import { Ports, injectable } from "@ebox/daemon";
+import { Ports } from "@ebox/daemon";
+import { injectable } from "inversify";
 
 class LoggerImpl implements Ports.Logger {
 	constructor(private readonly prefix: string) {}

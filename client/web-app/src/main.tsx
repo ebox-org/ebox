@@ -2,7 +2,6 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { ApolloProvider } from "@apollo/client";
 import "./adapters";
-import { bootstrap } from "@ebox/daemon";
 import { WebAppContainer } from "./container";
 import { useActor, useSelector } from "@xstate/react";
 import { Actor, ActorRef, EventObject } from "xstate";
@@ -14,7 +13,7 @@ import { MessageInput } from "./features/message";
 import { CssBaseline } from "@mui/material";
 
 function App() {
-	const running = useSelector(Daemon.root, (s) => {
+	const running = useSelector(Daemon.Root.RootMachine, (s) => {
 		return s.matches("running");
 	});
 
@@ -22,14 +21,14 @@ function App() {
 		return (
 			<>
 				<CssBaseline />
-
-				<Node />
-				<hr />
-				<NodeMap />
+				running
+				{/* <Node /> */}
+				{/* <hr /> */}
+				{/* <NodeMap />
 				<hr />
 				<MessageInput />
 				<hr />
-				<MessageList />
+				<MessageList /> */}
 			</>
 		);
 	}
