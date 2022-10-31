@@ -1,6 +1,6 @@
 import { ActorRefFrom, assign, createMachine, spawn } from "xstate";
 import { DaemonContainer } from "../../container";
-import * as Ports from "../../_ports";
+import * as Ports from "../../ports";
 import { faker } from "@faker-js/faker";
 
 import {
@@ -10,20 +10,23 @@ import {
 	RegisterMutation,
 } from "./operations.generated";
 import { createLocationMachine, LocationMachine } from "../location";
-import { createMessageMachine, MessageMachine } from "../message";
+// import { createMessageMachine, MessageMachine } from "../message";
+import { interfaces } from "inversify";
 
 export interface NodeMachineCtx {
 	nodeID?: string;
 	locationRef?: ActorRefFrom<LocationMachine>;
-	messageRef?: ActorRefFrom<MessageMachine>;
+	// messageRef?: ActorRefFrom<MessageMachine>;
 }
 
-export const createNodeMachine = (container: DaemonContainer) => {
-	const logger = container.get(Ports.LoggerFactory).createLogger("node");
+export const createNodeMachine = (ctx: interfaces.Context) => () => {
+	const logger = ctx.container
+		.get<Ports.LoggerFactory>(Ports.LoggerFactory)
+		.createLogger("node");
 
-	const kvStorage = container.get(Ports.KVStorage);
+	const kvStorage = ctx.container.get<Ports.KVStorage>(Ports.KVStorage);
 
-	const Api = container.get(Ports.Api);
+	const Api = ctx.container.get<Ports.Api>(Ports.Api);
 
 	return createMachine<NodeMachineCtx>(
 		{
@@ -64,20 +67,20 @@ export const createNodeMachine = (container: DaemonContainer) => {
 					};
 				}),
 				spawnLocation: assign((ctx, event) => {
-					const locationRef = spawn(
-						createLocationMachine(container, ctx.nodeID!)
-					);
+					// const locationRef = spawn(
+					// 	createLocationMachine(container, ctx.nodeID!)
+					// );
 
 					return {
-						locationRef,
+						// locationRef,
 					};
 				}),
 				spawnMessageMachine: assign<NodeMachineCtx>((ctx, event) => {
 					return {
-						messageRef: spawn(
-							createMessageMachine(container, ctx.nodeID!),
-							"message"
-						),
+						// messageRef: spawn(
+						// 	createMessageMachine(container, ctx.nodeID!),
+						// 	"message"
+						// ),
 					};
 				}),
 			},
@@ -119,5 +122,3 @@ export const createNodeMachine = (container: DaemonContainer) => {
 		}
 	);
 };
-
-export type NodeMachine = ReturnType<typeof createNodeMachine>;

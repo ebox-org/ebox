@@ -1,7 +1,8 @@
+import { interfaces } from "inversify";
 import { over } from "ok-value-error-reason";
 import { assign, createMachine } from "xstate";
 import { DaemonContainer } from "../../container";
-import * as Ports from "../../_ports";
+import * as Ports from "../../ports";
 import {
 	FindNearByNodesDocument,
 	FindNearByNodesQueryVariables,
@@ -17,10 +18,13 @@ export interface NodeMapMachineCtx {
 	nearbyNodes: NearbyNode[];
 }
 
-export const createNodeMapMachine = (container: DaemonContainer) => {
-	const logger = container.get(Ports.LoggerFactory).createLogger("NodeMap");
+export const createNodeMapMachine = (ctx: interfaces.Context) => () => {
+	const container = ctx.container;
+	const logger = container
+		.get<Ports.LoggerFactory>(Ports.LoggerFactory)
+		.createLogger("NodeMap");
 
-	const geo = container.get(Ports.GeoLocation);
+	const geo = container.get<Ports.GeoLocation>(Ports.GeoLocation);
 
 	const Api = container.get(Ports.Api);
 
@@ -107,5 +111,3 @@ export const createNodeMapMachine = (container: DaemonContainer) => {
 		}
 	);
 };
-
-export type NodeMapMachine = ReturnType<typeof createNodeMapMachine>;

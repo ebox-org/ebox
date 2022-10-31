@@ -13,7 +13,7 @@ import { MessageInput } from "./features/message";
 import { CssBaseline } from "@mui/material";
 
 function App() {
-	const running = useSelector(Daemon.Root.RootMachine, (s) => {
+	const running = useSelector(Daemon.Root.Machine, (s) => {
 		return s.matches("running");
 	});
 
@@ -21,9 +21,8 @@ function App() {
 		return (
 			<>
 				<CssBaseline />
-				running
-				{/* <Node /> */}
-				{/* <hr /> */}
+				<Node />
+				<hr />
 				{/* <NodeMap />
 				<hr />
 				<MessageInput />

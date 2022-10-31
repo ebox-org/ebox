@@ -23,6 +23,11 @@ export class Daemon {
 	get Root() {
 		return this.root;
 	}
+
+	start() {
+		this.Root.Machine.start();
+		return this;
+	}
 }
 
 let d: Daemon;

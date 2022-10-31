@@ -1,9 +1,12 @@
-import { useSelector } from "@xstate/react";
+import { useActor, useSelector } from "@xstate/react";
 import React from "react";
-import { Daemon, useDaemonActor } from "../../state-machine";
+import { Daemon } from "../../state-machine";
 
 export function Node() {
-	const nodeActor = useDaemonActor((d) => d.context.nodeRef);
+	const nodeActor = useSelector(
+		Daemon.Root.Machine,
+		(ref) => ref.context.nodeRef
+	);
 
 	const nodeId = useSelector(nodeActor!, (s) => {
 		return s.context?.nodeID;
