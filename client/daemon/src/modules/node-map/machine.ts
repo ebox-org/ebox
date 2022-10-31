@@ -26,7 +26,7 @@ export const createNodeMapMachine = (ctx: interfaces.Context) => () => {
 
 	const geo = container.get<Ports.GeoLocation>(Ports.GeoLocation);
 
-	const Api = container.get(Ports.Api);
+	const Api = container.get<Ports.Api>(Ports.Api);
 
 	return createMachine<NodeMapMachineCtx>(
 		{

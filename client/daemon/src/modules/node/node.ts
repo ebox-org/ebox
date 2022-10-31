@@ -1,6 +1,5 @@
 import { ActorRefFrom, assign, createMachine, spawn } from "xstate";
 import { DaemonContainer } from "../../container";
-import * as Ports from "../../_ports";
 import { faker } from "@faker-js/faker";
 
 import {

@@ -2,7 +2,7 @@ import { interfaces } from "inversify";
 import { createMachine, ActorRefFrom, assign, spawn } from "xstate";
 import * as Ports from "../../ports";
 import { NodeDaemon, NodeMachineFactory } from "../node";
-import { NodeMapMachine } from "../node-map/machine";
+import { NodeMap, NodeMapMachine } from "../node-map";
 
 export interface RootMachineCtx {
 	nodeRef?: ActorRefFrom<NodeMachineFactory>;
@@ -76,11 +76,14 @@ export const createRootMachine = (ctx: interfaces.Context) => () => {
 						),
 					};
 				}),
-				// spawnNodeMapMachine: assign<RootMachineCtx>(() => {
-				// 	return {
-				// 		// nodeMapRef: spawn(createNodeMapMachine(ctx.container), "nodeMap"),
-				// 	};
-				// }),
+				spawnNodeMapMachine: assign<RootMachineCtx>(() => {
+					return {
+						nodeMapRef: spawn(
+							ctx.container.get<NodeMap>(NodeMap).createMachine(),
+							"nodeMap"
+						),
+					};
+				}),
 			},
 			services: {
 				validateAdapters: async (ctx, event) => {

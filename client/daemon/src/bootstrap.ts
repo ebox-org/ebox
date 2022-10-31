@@ -5,6 +5,7 @@ import { Container, inject, injectable } from "inversify";
 import { RootModule } from "./modules/root/root";
 import { DaemonModule, Daemon } from "./daemon";
 import { NodeModule } from "./modules/node";
+import { NodeMapModule } from "./modules/node-map";
 
 export class Boostrapper {
 	readonly container;
@@ -17,6 +18,7 @@ export class Boostrapper {
 		DaemonModule,
 		RootModule,
 		NodeModule,
+		NodeMapModule,
 		// SendMessageModule,
 	];
 

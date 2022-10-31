@@ -23,9 +23,9 @@ function App() {
 				<CssBaseline />
 				<Node />
 				<hr />
-				{/* <NodeMap />
+				<NodeMap />
 				<hr />
-				<MessageInput />
+				{/* <MessageInput />
 				<hr />
 				<MessageList /> */}
 			</>
