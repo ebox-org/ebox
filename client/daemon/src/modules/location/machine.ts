@@ -1,6 +1,6 @@
 import { assign, createMachine } from "xstate";
 import { DaemonContainer } from "../../container";
-import * as Ports from "../../_ports";
+import * as Ports from "../../ports";
 import { faker } from "@faker-js/faker";
 import { over } from "ok-value-error-reason";
 
@@ -9,84 +9,85 @@ import {
 	UpdateLocationMutation,
 	UpdateLocationMutationVariables,
 } from "./operations.generated";
+import { interfaces } from "inversify";
 
 export interface NodeMachineCtx {
 	nodeID: string;
 }
 
-export const createLocationMachine = (
-	container: DaemonContainer,
-	nodeID: string
-) => {
-	const logger = container.get(Ports.LoggerFactory).createLogger("node");
+export const createLocationMachine =
+	(ctx: interfaces.Context) => (nodeID: string) => {
+		const container = ctx.container;
 
-	const kvStorage = container.get(Ports.KVStorage);
+		const logger = container
+			.get<Ports.LoggerFactory>(Ports.LoggerFactory)
+			.createLogger("node");
 
-	const Api = container.get(Ports.Api);
+		const kvStorage = container.get<Ports.KVStorage>(Ports.KVStorage);
 
-	const geo = container.get(Ports.GeoLocation);
+		const Api = container.get<Ports.Api>(Ports.Api);
 
-	return createMachine<NodeMachineCtx>(
-		{
-			id: "location",
-			initial: "idle",
-			context: { nodeID },
-			states: {
-				idle: {
-					always: {
-						target: "updating",
-					},
-				},
-				updating: {
-					invoke: {
-						src: "upLocation",
-						onDone: {
-							target: "updated",
+		const geo = container.get<Ports.GeoLocation>(Ports.GeoLocation);
+
+		return createMachine<NodeMachineCtx>(
+			{
+				id: "location",
+				initial: "idle",
+				context: { nodeID },
+				states: {
+					idle: {
+						always: {
+							target: "updating",
 						},
-						onError: "updatedFailed",
 					},
-				},
-				updated: {
-					after: {
-						5000: "updating",
+					updating: {
+						invoke: {
+							src: "upLocation",
+							onDone: {
+								target: "updated",
+							},
+							onError: "updatedFailed",
+						},
 					},
-				},
-				updatedFailed: {
-					after: {
-						5000: "updating",
+					updated: {
+						after: {
+							5000: "updating",
+						},
+					},
+					updatedFailed: {
+						after: {
+							5000: "updating",
+						},
 					},
 				},
 			},
-		},
-		{
-			actions: {},
-			services: {
-				upLocation: async (ctx, event) => {
-					const coords = await over(geo.getCurrentPosition);
+			{
+				actions: {},
+				services: {
+					upLocation: async (ctx, event) => {
+						const coords = await over(geo.getCurrentPosition);
 
-					if (!coords.ok) {
-						throw coords.reason;
-					}
+						if (!coords.ok) {
+							throw coords.reason;
+						}
 
-					const res = await Api.mutate<
-						UpdateLocationMutation,
-						UpdateLocationMutationVariables
-					>({
-						mutation: UpdateLocationDocument,
-						variables: {
-							lat: coords.value.latitude,
-							long: coords.value.longitude,
-							nodeID: ctx.nodeID,
-						},
-					});
+						const res = await Api.mutate<
+							UpdateLocationMutation,
+							UpdateLocationMutationVariables
+						>({
+							mutation: UpdateLocationDocument,
+							variables: {
+								lat: coords.value.latitude,
+								long: coords.value.longitude,
+								nodeID: ctx.nodeID,
+							},
+						});
 
-					if (res.errors) {
-						throw res.errors;
-					}
+						if (res.errors) {
+							throw res.errors;
+						}
+					},
 				},
-			},
-		}
-	);
-};
-
-export type LocationMachine = ReturnType<typeof createLocationMachine>;
+			}
+		);
+	};

@@ -18,6 +18,7 @@ export default defineConfig({
 		emptyOutDir: true,
 	},
 	server: {
+		origin: 'http://localhost:5173',
 		cors: {
 			origin: "*",
 			preflightContinue: true,

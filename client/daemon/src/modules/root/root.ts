@@ -42,6 +42,8 @@ export class RootModule {
 
 		@inject(NodeModule) private nodeModule: NodeModule
 	) {
-		this.machine = interpret(this.rootMachineFactory());
+		this.machine = interpret(this.rootMachineFactory(), {
+			devTools: true,
+		});
 	}
 }

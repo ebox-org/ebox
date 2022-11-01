@@ -7,6 +7,7 @@ import { DaemonModule } from "./daemon";
 import { NodeModule } from "./modules/node";
 import { NodeMapModule } from "./modules/node-map";
 import { getModuleMetadata } from "./internals/decorators";
+import { LocationModule } from "./modules/location";
 
 export class Boostrapper {
 	readonly container;
@@ -20,6 +21,7 @@ export class Boostrapper {
 		RootModule,
 		NodeModule,
 		NodeMapModule,
+		LocationModule,
 		// SendMessageModule,
 	];
 

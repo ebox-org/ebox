@@ -1,2 +1,2 @@
-export * from './machine';
+export * from './location';
 export * from './operations.generated';

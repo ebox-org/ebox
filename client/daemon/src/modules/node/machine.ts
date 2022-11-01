@@ -9,7 +9,7 @@ import {
 	RegisterMutationVariables,
 	RegisterMutation,
 } from "./operations.generated";
-import { createLocationMachine, LocationMachine } from "../location";
+import { LocationMachine, LocationModule } from "../location";
 // import { createMessageMachine, MessageMachine } from "../message";
 import { interfaces } from "inversify";
 
@@ -20,6 +20,8 @@ export interface NodeMachineCtx {
 }
 
 export const createNodeMachine = (ctx: interfaces.Context) => () => {
+	const container = ctx.container;
+
 	const logger = ctx.container
 		.get<Ports.LoggerFactory>(Ports.LoggerFactory)
 		.createLogger("node");
@@ -67,9 +69,11 @@ export const createNodeMachine = (ctx: interfaces.Context) => () => {
 					};
 				}),
 				spawnLocation: assign((ctx, event) => {
-					// const locationRef = spawn(
-					// 	createLocationMachine(container, ctx.nodeID!)
-					// );
+					const locationRef = spawn(
+						container
+							.get<LocationModule>(LocationModule)
+							.createMachine(ctx.nodeID!)
+					);
 
 					return {
 						// locationRef,
