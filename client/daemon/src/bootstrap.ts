@@ -3,9 +3,10 @@ import { inspect } from "@xstate/inspect";
 import { Container, inject, injectable } from "inversify";
 // import { SendMessageModule } from "./modules/send-message";
 import { RootModule } from "./modules/root/root";
-import { DaemonModule, Daemon } from "./daemon";
+import { DaemonModule } from "./daemon";
 import { NodeModule } from "./modules/node";
 import { NodeMapModule } from "./modules/node-map";
+import { getModuleMetadata } from "./internals/decorators";
 
 export class Boostrapper {
 	readonly container;
@@ -24,12 +25,16 @@ export class Boostrapper {
 
 	private bindAll() {
 		Boostrapper.modules.forEach((module) => {
-			module.setup(this.container);
+			if (typeof module === "function") {
+				getModuleMetadata(module)?.setup(this.container);
+			} else if (typeof module === "object") {
+				// module.setup(this.container);
+			}
 		});
 	}
 
 	bootstrap() {
 		this.bindAll();
-		return this.container.resolve(Daemon).start();
+		return this.container.resolve(DaemonModule).start();
 	}
 }

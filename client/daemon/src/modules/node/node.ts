@@ -13,6 +13,7 @@ import { createLocationMachine, LocationMachine } from "../location";
 import { inject, injectable } from "inversify";
 import { DaemonModule } from "../../internals/interfaces";
 import { createNodeMachine } from "./machine";
+import { Module } from "../../internals/decorators";
 
 export type NodeMachineFactory = ReturnType<typeof createNodeMachine>;
 export const NodeMachineFactory = Symbol("NodeMachineFactory");
@@ -20,7 +21,15 @@ export const NodeMachineFactory = Symbol("NodeMachineFactory");
 export type NodeMachine = ReturnType<NodeMachineFactory>;
 
 @injectable()
-export class NodeDaemon {
+@Module({
+	setup: (container) => {
+		container
+			.bind<NodeMachineFactory>(NodeMachineFactory)
+			.toFactory(createNodeMachine);
+		container.bind(NodeModule).toSelf();
+	},
+})
+export class NodeModule {
 	constructor(
 		@inject(NodeMachineFactory) private nodeMachineFactory: NodeMachineFactory
 	) {}
@@ -31,12 +40,3 @@ export class NodeDaemon {
 
 	off() {}
 }
-
-export const NodeModule: DaemonModule = {
-	setup: (container) => {
-		container
-			.bind<NodeMachineFactory>(NodeMachineFactory)
-			.toFactory(createNodeMachine);
-		container.bind(NodeDaemon).toSelf();
-	},
-};

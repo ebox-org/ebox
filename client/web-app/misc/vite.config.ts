@@ -28,6 +28,11 @@ export default defineConfig({
 				changeOrigin: true,
 				// rewrite: (path) => path.replace(/^\/file/, ""),
 			},
+			"^/graphql-router/.*": {
+				target: "http://ebox.com:8000",
+				changeOrigin: true,
+				// rewrite: (path) => path.replace(/^\/file/, ""),
+			},
 		},
 	},
 });

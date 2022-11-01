@@ -1,4 +1,5 @@
 import { inject, injectable } from "inversify";
+import { Module } from "../../internals/decorators";
 import { DaemonModule } from "../../internals/interfaces";
 import { createNodeMapMachine } from "./machine";
 
@@ -8,7 +9,13 @@ export const NodeMapMachineFactory = Symbol("NodeMapMachineFactory");
 export type NodeMapMachine = ReturnType<NodeMapMachineFactory>;
 
 @injectable()
-export class NodeMap {
+@Module({
+	setup: (container) => {
+		container.bind(NodeMapMachineFactory).toFactory(createNodeMapMachine);
+		container.bind(NodeMapModule).toSelf();
+	},
+})
+export class NodeMapModule {
 	/**
 	 *
 	 */
@@ -21,10 +28,3 @@ export class NodeMap {
 		return this.machineFactory();
 	}
 }
-
-export const NodeMapModule: DaemonModule = {
-	setup: (container) => {
-		container.bind(NodeMapMachineFactory).toFactory(createNodeMapMachine);
-		container.bind(NodeMap).toSelf();
-	},
-};

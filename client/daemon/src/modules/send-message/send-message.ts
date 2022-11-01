@@ -5,6 +5,7 @@ import * as Ports from "../../ports";
 import { DaemonModule } from "../../internals/interfaces";
 
 import * as Op from "../message/operations.generated";
+import { Module } from "../../internals/decorators";
 
 export type SendMachineEvent = {
 	type: "SEND";
@@ -89,7 +90,15 @@ export type SendMachine = ReturnType<SendMachineFactory>;
 export const SendMachineFactory = Symbol("SendMachineFactory");
 
 @injectable()
-class SendMessage {
+@Module({
+	setup(container: Container) {
+		container
+			.bind<SendMachine>(SendMachineFactory)
+			.toFactory(createSendMachine);
+		container.bind<SendMessageModule>(SendMessageModule).toSelf();
+	},
+})
+export class SendMessageModule {
 	@inject(SendMachineFactory)
 	private createSendMachine!: SendMachineFactory;
 
@@ -97,12 +106,3 @@ class SendMessage {
 		return this.createSendMachine(toID);
 	}
 }
-
-export const SendMessageModule: DaemonModule = {
-	setup(container: Container) {
-		container
-			.bind<SendMachine>(SendMachineFactory)
-			.toFactory(createSendMachine);
-		container.bind<SendMessage>(SendMessage).toSelf();
-	},
-};

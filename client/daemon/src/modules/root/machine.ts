@@ -1,8 +1,8 @@
 import { interfaces } from "inversify";
 import { createMachine, ActorRefFrom, assign, spawn } from "xstate";
 import * as Ports from "../../ports";
-import { NodeDaemon, NodeMachineFactory } from "../node";
-import { NodeMap, NodeMapMachine } from "../node-map";
+import { NodeModule, NodeMachineFactory } from "../node";
+import { NodeMapModule, NodeMapMachine } from "../node-map";
 
 export interface RootMachineCtx {
 	nodeRef?: ActorRefFrom<NodeMachineFactory>;
@@ -71,7 +71,7 @@ export const createRootMachine = (ctx: interfaces.Context) => () => {
 				spawnNodeMachine: assign<RootMachineCtx>(() => {
 					return {
 						nodeRef: spawn(
-							ctx.container.get<NodeDaemon>(NodeDaemon).createMachine(),
+							ctx.container.get<NodeModule>(NodeModule).createMachine(),
 							"node"
 						),
 					};
@@ -79,7 +79,7 @@ export const createRootMachine = (ctx: interfaces.Context) => () => {
 				spawnNodeMapMachine: assign<RootMachineCtx>(() => {
 					return {
 						nodeMapRef: spawn(
-							ctx.container.get<NodeMap>(NodeMap).createMachine(),
+							ctx.container.get<NodeMapModule>(NodeMapModule).createMachine(),
 							"nodeMap"
 						),
 					};

@@ -1,24 +1,19 @@
 import { interpret, Interpreter } from "xstate";
-import { Root } from "./modules/root";
+import { RootModule } from "./modules/root";
 import { DaemonContainer } from "./container";
 import { inspect } from "@xstate/inspect";
 import { createUploadMachine } from "./modules/upload/machine";
 import pDefer from "p-defer";
 import { Container, inject, injectable } from "inversify";
 import { DaemonModule as _DaemonModule } from "./internals/interfaces";
-import { NodeDaemon } from "./modules/node";
+import { NodeModule } from "./modules/node";
+import { Module } from "./internals/decorators";
 
 @injectable()
-export class Daemon {
-	// @inject<NodeDaemon>(NodeDaemon)
-	// private node!: NodeDaemon;
-
-	// get Node() {
-	// 	return this.node;
-	// }
-
-	@inject<Root>(Root)
-	private root!: Root;
+@Module()
+export class DaemonModule {
+	@inject<RootModule>(RootModule)
+	private root!: RootModule;
 
 	get Root() {
 		return this.root;
@@ -30,10 +25,4 @@ export class Daemon {
 	}
 }
 
-let d: Daemon;
-
-export const DaemonModule: _DaemonModule = {
-	setup(container: Container) {
-		container.bind(Daemon).toSelf();
-	},
-};
+let d: DaemonModule;

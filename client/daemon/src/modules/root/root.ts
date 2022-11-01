@@ -8,9 +8,9 @@ import {
 	interpret,
 } from "xstate";
 import { DaemonContainer } from "../../container";
-import { DaemonModule } from "../../internals/interfaces";
+import { Module } from "../../internals/decorators";
 // import { createMessageMachine, MessageMachine } from "../message";
-import { NodeDaemon } from "../node";
+import { NodeModule } from "../node";
 import { createNodeMapMachine } from "../node-map/machine";
 import { createRootMachine } from "./machine";
 
@@ -20,7 +20,16 @@ export const RootMachineFactory = Symbol("RootMachineFactory");
 export type RootMachineRef = ActorRefFrom<typeof createRootMachine>;
 
 @injectable()
-export class Root {
+@Module({
+	setup(container: Container) {
+		container
+			.bind<RootMachineFactory>(RootMachineFactory)
+			.toFactory(createRootMachine);
+
+		container.bind<RootModule>(RootModule).toSelf();
+	},
+})
+export class RootModule {
 	private machine;
 
 	public get Machine() {
@@ -31,18 +40,8 @@ export class Root {
 		@inject<RootMachineFactory>(RootMachineFactory)
 		private rootMachineFactory: RootMachineFactory,
 
-		@inject(NodeDaemon) private nodeDaemon: NodeDaemon
+		@inject(NodeModule) private nodeModule: NodeModule
 	) {
 		this.machine = interpret(this.rootMachineFactory());
 	}
 }
-
-export const RootModule: DaemonModule = {
-	setup(container: Container) {
-		container
-			.bind<RootMachineFactory>(RootMachineFactory)
-			.toFactory(createRootMachine);
-
-		container.bind<Root>(Root).toSelf();
-	},
-};
