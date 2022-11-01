@@ -6,7 +6,7 @@ export interface Logger {
 }
 
 export interface LoggerFactory {
-	createLogger: (name: string) => Logger;
+	createLogger: (...tags: string[]) => Logger;
 }
 
 export const LoggerFactory = Symbol("LoggerFactory");
