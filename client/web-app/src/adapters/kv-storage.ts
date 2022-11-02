@@ -18,8 +18,8 @@ class KVGroupImpl implements Ports.KVGroup {
 	async setItem<T>(key: string, value: T): Promise<void> {
 		await this._forage.setItem(key, value);
 	}
-	remove(key: string): Promise<void> {
-		throw new Error("Method not implemented.");
+	async remove(key: string): Promise<void> {
+		await this._forage.removeItem(key);
 	}
 	clear(): Promise<void> {
 		throw new Error("Method not implemented.");

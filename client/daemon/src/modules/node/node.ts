@@ -8,7 +8,7 @@ import {
 	RegisterMutationVariables,
 	RegisterMutation,
 } from "./operations.generated";
-import { createLocationMachine, LocationMachine } from "../location";
+import { LocationMachine } from "../location";
 // import { createMessageMachine, MessageMachine } from "../message";
 import { inject, injectable } from "inversify";
 import { DaemonModule } from "../../internals/interfaces";

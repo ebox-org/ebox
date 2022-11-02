@@ -10,14 +10,22 @@ import {
 	RegisterMutation,
 } from "./operations.generated";
 import { LocationMachine, LocationModule } from "../location";
-// import { createMessageMachine, MessageMachine } from "../message";
+import { MessageMachine } from "../message";
 import { interfaces } from "inversify";
+import { MessageModule } from "../message";
+import { SendMachine } from "../send-message";
 
 export interface NodeMachineCtx {
 	nodeID?: string;
 	locationRef?: ActorRefFrom<LocationMachine>;
-	// messageRef?: ActorRefFrom<MessageMachine>;
+	messageRef?: ActorRefFrom<MessageMachine>;
 }
+
+export type ResetNode = {
+	type: "RESET_NODE";
+};
+
+const Key = "node-id";
 
 export const createNodeMachine = (ctx: interfaces.Context) => () => {
 	const container = ctx.container;
@@ -53,6 +61,24 @@ export const createNodeMachine = (ctx: interfaces.Context) => () => {
 				},
 				registered: {
 					entry: ["spawnLocation", "spawnMessageMachine"],
+					on: {
+						RESET_NODE: "resetting",
+					},
+				},
+				resetting: {
+					entry: [
+						(ctx) => {
+							ctx.locationRef?.stop?.();
+							ctx.messageRef?.stop?.();
+						},
+					],
+					invoke: {
+						src: "resetNode",
+						onDone: {
+							target: "inactive",
+						},
+						onError: "inactive",
+					},
 				},
 				registerFailed: {
 					after: {
@@ -76,23 +102,23 @@ export const createNodeMachine = (ctx: interfaces.Context) => () => {
 					);
 
 					return {
-						// locationRef,
+						locationRef,
 					};
 				}),
-				spawnMessageMachine: assign<NodeMachineCtx>((ctx, event) => {
+				spawnMessageMachine: assign((ctx, event) => {
 					return {
-						// messageRef: spawn(
-						// 	createMessageMachine(container, ctx.nodeID!),
-						// 	"message"
-						// ),
+						messageRef: spawn(
+							container
+								.get<MessageModule>(MessageModule)
+								.createMachine(ctx.nodeID!),
+							"message"
+						),
 					};
 				}),
 			},
 			services: {
 				register: async (ctx, event) => {
 					logger.debug("registering node");
-
-					const Key = "node-id";
 
 					const kv = await kvStorage.open("modules.node");
 
@@ -121,6 +147,15 @@ export const createNodeMachine = (ctx: interfaces.Context) => () => {
 					logger.info(`node registered: ${nodeID}`);
 
 					return nodeID;
+				},
+				resetNode: async (ctx, event) => {
+					logger.debug("resetting node");
+
+					const kv = await kvStorage.open("modules.node");
+
+					await kv.remove(Key);
+
+					logger.info("node reset");
 				},
 			},
 		}

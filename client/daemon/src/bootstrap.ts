@@ -1,13 +1,14 @@
 import { interpret } from "xstate";
 import { inspect } from "@xstate/inspect";
 import { Container, inject, injectable } from "inversify";
-// import { SendMessageModule } from "./modules/send-message";
+import { SendMessageModule } from "./modules/send-message";
 import { RootModule } from "./modules/root/root";
 import { DaemonModule } from "./daemon";
 import { NodeModule } from "./modules/node";
 import { NodeMapModule } from "./modules/node-map";
 import { getModuleMetadata } from "./internals/decorators";
 import { LocationModule } from "./modules/location";
+import { MessageModule } from "./modules/message";
 
 export class Boostrapper {
 	readonly container;
@@ -22,7 +23,8 @@ export class Boostrapper {
 		NodeModule,
 		NodeMapModule,
 		LocationModule,
-		// SendMessageModule,
+		MessageModule,
+		SendMessageModule,
 	];
 
 	private bindAll() {

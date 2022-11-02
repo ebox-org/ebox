@@ -5,7 +5,6 @@ import { inspect } from "@xstate/inspect";
 import { createUploadMachine } from "./modules/upload/machine";
 import pDefer from "p-defer";
 import { Container, inject, injectable } from "inversify";
-import { DaemonModule as _DaemonModule } from "./internals/interfaces";
 import { NodeModule } from "./modules/node";
 import { Module } from "./internals/decorators";
 
@@ -23,6 +22,11 @@ export class DaemonModule {
 		this.Root.Machine.start();
 		return this;
 	}
-}
 
-let d: DaemonModule;
+	resetNode() {
+		this.Root.Machine.getSnapshot().context.nodeRef?.send({
+			type: "RESET_NODE",
+		});
+		return this;
+	}
+}
