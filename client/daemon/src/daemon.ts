@@ -29,4 +29,8 @@ export class DaemonModule {
 		});
 		return this;
 	}
+
+	uploadFile(file: File) {
+		
+	}
 }

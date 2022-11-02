@@ -25,9 +25,9 @@ function App() {
 				<hr />
 				<NodeMap />
 				<hr />
-				{/* <MessageInput />
+				<MessageInput />
 				<hr />
-				<MessageList /> */}
+				<MessageList />
 			</>
 		);
 	}

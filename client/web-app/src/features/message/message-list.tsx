@@ -1,13 +1,14 @@
 import * as React from "react";
 import { useActor, useSelector } from "@xstate/react";
-import { useDaemonActor } from "../../state-machine";
+import { Daemon } from "../../state-machine";
 import { ActorRef, ActorRefFrom } from "xstate";
-import { Message, MessageMachine } from "@ebox/daemon";
+import { Message, MessageMachine } from "@ebox/daemon/dist/src/modules/message";
 
 export const MessageList = () => {
-	const nodeRef = useDaemonActor((s) => {
-		return s.context.nodeRef!;
-	});
+	const nodeRef = useSelector(
+		Daemon.Root.Machine,
+		(ref) => ref.context.nodeRef
+	);
 
 	const messageRef = useSelector(nodeRef!, (s) => {
 		return s.context.messageRef;
@@ -72,7 +73,11 @@ function File({ message }: { message: Message }) {
 	return (
 		<div>
 			{message.fromID}:{" "}
-			<a href={`${DOWNLOAD_API}/${message.content}`} target="_blank" download="file">
+			<a
+				href={`${DOWNLOAD_API}/${message.content}`}
+				target="_blank"
+				download="file"
+			>
 				File
 			</a>
 		</div>

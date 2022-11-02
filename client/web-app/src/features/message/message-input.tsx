@@ -1,8 +1,8 @@
 import * as React from "react";
 import { useActor, useSelector } from "@xstate/react";
-import { Daemon, useDaemonActor } from "../../state-machine";
+import { Daemon } from "../../state-machine";
 import { ActorRef, ActorRefFrom } from "xstate";
-import { MessageMachine, SendMachine } from "@ebox/daemon";
+// import { interfaces } from "@ebox/daemon";
 import {
 	FormControl,
 	FormControlLabel,
@@ -10,16 +10,25 @@ import {
 	Radio,
 	RadioGroup,
 } from "@mui/material";
+import { SendMachine } from "@ebox/daemon/dist/src/modules/message";
 // import {RadioGroup} from '@mui/base'
 
 export const MessageInput = () => {
-	const nodeRef = useDaemonActor((s) => {
-		return s.context.nodeRef!;
-	});
+	// const nodeRef = useSelector(
+	// 	Daemon.Root.Machine,
+	// 	(ref) => ref.context.nodeRef
+	// );
 
-	const sendRef = useSelector(nodeRef!, (s) => {
-		return s.context.messageRef?.getSnapshot()?.context.sendRef;
-	});
+	// const messageRef = useSelector(nodeRef!, (s) => {
+	// 	return s.context.messageRef?.getSnapshot()?.context;
+	// });
+
+	const sendRef = useSelector(
+		Daemon.Root.Machine,
+		(ref) =>
+			ref.context.nodeRef?.getSnapshot()?.context.messageRef?.getSnapshot()
+				?.context.sendRef
+	);
 
 	if (!sendRef) {
 		return <div>Not ready</div>;
@@ -49,18 +58,15 @@ function MessageInputReady({ sendRef }: MessageInputReady) {
 			});
 			textRef.current!.value = "";
 		} else if (cType === "file") {
-			const file = fileRef.current!.files![0];
-
-			const fid = await Daemon.upload(file);
-
-			fileRef.current!.value = "";
-
-			sendRef.send({
-				type: "SEND",
-				toID: toRef.current!.value,
-				msgType: "file",
-				content: fid,
-			});
+			// const file = fileRef.current!.files![0];
+			// const fid = await Daemon.upload(file);
+			// fileRef.current!.value = "";
+			// sendRef.send({
+			// 	type: "SEND",
+			// 	toID: toRef.current!.value,
+			// 	msgType: "file",
+			// 	content: fid,
+			// });
 		}
 	};
 
