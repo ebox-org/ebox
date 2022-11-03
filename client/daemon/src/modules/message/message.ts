@@ -3,7 +3,7 @@ import { createMachine, sendParent } from "xstate";
 import { Module } from "../../internals/decorators";
 
 import * as Ports from "../../ports";
-import { createMessageMachine } from "./machines";
+import { createMessageMachine } from "./machine";
 
 import * as Op from "./operations.generated";
 

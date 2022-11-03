@@ -1,11 +1,12 @@
 import { defineConfig } from "vite";
 import { resolve } from "path";
+import tsconfigPaths from "vite-tsconfig-paths";
 
 import react from "@vitejs/plugin-react";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-	plugins: [react()],
+	plugins: [tsconfigPaths(), react()],
 	root: resolve(__dirname, "../src"),
 	envDir: resolve(__dirname, "../env"),
 	resolve: {
@@ -18,7 +19,7 @@ export default defineConfig({
 		emptyOutDir: true,
 	},
 	server: {
-		origin: 'http://localhost:5173',
+		origin: "http://localhost:5173",
 		cors: {
 			origin: "*",
 			preflightContinue: true,
