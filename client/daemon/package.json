@@ -1,7 +1,8 @@
 {
 	"name": "daemon",
 	"version": "1.0.0",
-	"main": "dist/src/index.js",
+	"main": "dist/cjs/index.js",
+	"module": "dist/esm/index.js",
 	"license": "MIT",
 	"packageManager": "yarn@3.2.4",
 	"type": "module",
@@ -9,6 +10,7 @@
 		"format": "rome format .",
 		"ci": "rome ci",
 		"build": "rollup -c ./misc/rollup.config.ts --configPlugin typescript",
+		"dev": "rollup -w -c ./misc/rollup.config.ts --configPlugin typescript",
 		"generate": "graphql-codegen --config codegen.yml"
 	},
 	"devDependencies": {

@@ -858,7 +858,7 @@ __metadata:
 
 "@ebox/daemon@file:../daemon::locator=webapp%40workspace%3A.":
   version: 1.0.0
-  resolution: "@ebox/daemon@file:../daemon#../daemon::hash=75c9f0&locator=webapp%40workspace%3A."
+  resolution: "@ebox/daemon@file:../daemon#../daemon::hash=5bb9b3&locator=webapp%40workspace%3A."
   dependencies:
     "@emotion/react": ^11.10.4
     "@emotion/styled": ^11.10.4
@@ -877,7 +877,7 @@ __metadata:
     reflect-metadata: ^0.1.13
     xstate: ^4.33.6
     zustand: ^4.1.1
-  checksum: 353a3ea93f0a5d23fb7eccd9c28caa464eb5a3b9a49b6c4731bdf63f960f6142b5fdfa3a2964e521cfd19373cd53dae8580131f9f5d2a071d458afd23953bdb6
+  checksum: 778aa9dd72468bde9f0b78b79fbc82a09662580bdfbcb4ccfbd8ea992bbb1d864ebaba6778f2cba804c999cefb11021864105e78b7120896e5f2ef7026f1f263
   languageName: node
   linkType: hard
 

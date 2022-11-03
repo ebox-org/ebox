@@ -1,5 +1,7 @@
 {
 	"extends": "./misc/tsconfig.share.json",
-	"compilerOptions": {},
+	"compilerOptions": {
+		"module": "commonjs",
+	},
 	"include": ["src/**/*"]
 }

@@ -26,7 +26,6 @@
 	},
 	"include": ["src"],
 	"references": [
-		{ "path": "../daemon/tsconfig.json" },
 		{ "path": "./tsconfig.node.json" }
 	]
 }
