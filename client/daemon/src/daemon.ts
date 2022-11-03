@@ -7,6 +7,7 @@ import pDefer from "p-defer";
 import { Container, inject, injectable } from "inversify";
 import { NodeModule } from "./modules/node";
 import { Module } from "./internals/decorators";
+import { NodeMapModule } from "./modules/node-map";
 
 @injectable()
 @Module()
@@ -18,19 +19,24 @@ export class DaemonModule {
 		return this.root;
 	}
 
+	@inject(NodeMapModule)
+	private nodeMap!: NodeMapModule;
+
+	get NodeMap() {
+		return this.nodeMap;
+	}
+
 	start() {
-		this.Root.Machine.start();
+		this.Root.Actor.start();
 		return this;
 	}
 
 	resetNode() {
-		this.Root.Machine.getSnapshot().context.nodeRef?.send({
+		this.Root.Actor.getSnapshot().context.nodeRef?.send({
 			type: "RESET_NODE",
 		});
 		return this;
 	}
 
-	uploadFile(file: File) {
-		
-	}
+	uploadFile(file: File) {}
 }

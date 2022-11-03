@@ -17,6 +17,9 @@
 		"outDir": "../dist/share",
 		"declaration": true /* Generate .d.ts files from TypeScript and JavaScript files in your project. */,
 		"declarationMap": true /* Create sourcemaps for d.ts files. */,
+		"sourceMap": true,
+		"inlineSourceMap": true,
+		
 
 		/* Interop Constraints */
 		"esModuleInterop": true /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */,

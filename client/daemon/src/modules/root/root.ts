@@ -30,10 +30,10 @@ export type RootMachineRef = ActorRefFrom<typeof createRootMachine>;
 	},
 })
 export class RootModule {
-	private machine;
+	private actor;
 
-	public get Machine() {
-		return this.machine;
+	public get Actor() {
+		return this.actor;
 	}
 
 	constructor(
@@ -42,7 +42,7 @@ export class RootModule {
 
 		@inject(NodeModule) private nodeModule: NodeModule
 	) {
-		this.machine = interpret(this.rootMachineFactory(), {
+		this.actor = interpret(this.rootMachineFactory(), {
 			devTools: true,
 		});
 	}

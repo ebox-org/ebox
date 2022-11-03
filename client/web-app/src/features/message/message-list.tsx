@@ -6,7 +6,7 @@ import { Message, MessageMachine } from "@ebox/daemon/dist/src/modules/message";
 
 export const MessageList = () => {
 	const nodeRef = useSelector(
-		Daemon.Root.Machine,
+		Daemon.Root.Actor,
 		(ref) => ref.context.nodeRef
 	);
 

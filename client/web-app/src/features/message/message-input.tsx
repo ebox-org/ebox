@@ -15,7 +15,7 @@ import { SendMachine } from "@ebox/daemon/dist/src/modules/message";
 
 export const MessageInput = () => {
 	// const nodeRef = useSelector(
-	// 	Daemon.Root.Machine,
+	// 	Daemon.Root.Actor,
 	// 	(ref) => ref.context.nodeRef
 	// );
 
@@ -24,7 +24,7 @@ export const MessageInput = () => {
 	// });
 
 	const sendRef = useSelector(
-		Daemon.Root.Machine,
+		Daemon.Root.Actor,
 		(ref) =>
 			ref.context.nodeRef?.getSnapshot()?.context.messageRef?.getSnapshot()
 				?.context.sendRef

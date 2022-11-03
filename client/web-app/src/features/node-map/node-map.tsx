@@ -3,25 +3,26 @@ import { useActor, useSelector } from "@xstate/react";
 import { Daemon } from "../../state-machine";
 
 export const NodeMap = () => {
-	const nodeMap = useSelector(
-		Daemon.Root.Machine,
-		(ref) => ref.context.nodeMapRef
-	);
+	// todo selector
+	if (!Daemon.NodeMap.Actor) {
+		return null;
+	}
 
-	const nearbyNodes = useSelector(nodeMap!, (s) => {
-		return s.context?.nearbyNodes ?? [];
+	return <ReadyNodeMap />;
+};
+
+function ReadyNodeMap() {
+	const nearbyNodes = useSelector(Daemon.NodeMap.Actor!, (s) => {
+		return s.context.nearbyNodes ?? [];
 	});
 
 	// if (re.loading) {
 	// 	return <div>loading</div>;
 	// }
-
 	// if (re.error || !re.data) {
 	// 	return <div>error</div>;
 	// }
-
 	// const nodes = re.data.findNearbyNodes;
-
 	return (
 		<div>
 			Node map:
@@ -32,4 +33,4 @@ export const NodeMap = () => {
 			))}
 		</div>
 	);
-};
+}

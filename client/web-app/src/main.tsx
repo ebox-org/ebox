@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { ApolloProvider } from "@apollo/client";
@@ -13,7 +14,7 @@ import { MessageInput } from "./features/message";
 import { CssBaseline } from "@mui/material";
 
 function App() {
-	const running = useSelector(Daemon.Root.Machine, (s) => {
+	const running = useSelector(Daemon.Root.Actor, (s) => {
 		return s.matches("running");
 	});
 

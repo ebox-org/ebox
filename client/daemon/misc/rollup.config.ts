@@ -8,6 +8,7 @@ const esm = defineConfig({
 	output: {
 		dir: "dist/esm",
 		format: "esm",
+		sourcemap: true,
 	},
 	plugins: [
 		typescript({
@@ -22,6 +23,7 @@ const cjs = defineConfig({
 	output: {
 		dir: "dist/cjs",
 		format: "cjs",
+		sourcemap: true,
 	},
 	plugins: [
 		typescript({

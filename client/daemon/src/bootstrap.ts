@@ -9,6 +9,7 @@ import { NodeMapModule } from "./modules/node-map";
 import { getModuleMetadata } from "./internals/decorators";
 import { LocationModule } from "./modules/location";
 import { MessageModule } from "./modules/message";
+import { ContextModule } from "./internals/context-module";
 
 export class Boostrapper {
 	readonly container;
@@ -18,6 +19,7 @@ export class Boostrapper {
 	}
 
 	static readonly modules = [
+		ContextModule,
 		DaemonModule,
 		RootModule,
 		NodeModule,
@@ -32,7 +34,7 @@ export class Boostrapper {
 			if (typeof module === "function") {
 				getModuleMetadata(module)?.setup(this.container);
 			} else if (typeof module === "object") {
-				// module.setup(this.container);
+				module.setup(this.container);
 			}
 		});
 	}

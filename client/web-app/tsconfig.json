@@ -21,11 +21,12 @@
 		"emitDecoratorMetadata": true,
 		"baseUrl": ".",
 		"paths": {
-			"@ebox/daemon": ["../daemon/src"]
+			// "@ebox/daemon": ["../daemon/src"]
 		}
 	},
 	"include": ["src"],
 	"references": [
 		{ "path": "./tsconfig.node.json" }
+		// { "path": "../daemon/misc/tsconfig.esm.json" }
 	]
 }
