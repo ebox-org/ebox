@@ -8,6 +8,7 @@ import * as Op from "./operations.generated";
 import { sendParent } from "xstate/lib/actions";
 import { interfaces } from "inversify";
 import { SendMachine, SendMessageModule } from "../send-message";
+import { SetNodeIDEvent } from "../../internals/common-event";
 
 export interface Message {
 	fromID: string;
@@ -19,13 +20,7 @@ export interface Message {
 export interface MessageCtx {
 	nodeID?: string;
 	messages: Message[];
-	sendRef: ActorRefFrom<SendMachine>;
 }
-
-export type SetNodeIDEvent = {
-	type: "SET_NODE_ID";
-	nodeID: string;
-};
 
 export type MessageMachineEvent = SetNodeIDEvent;
 
@@ -45,9 +40,6 @@ export const createMessageMachine = (ctx: interfaces.Context) => () => {
 			context: {
 				nodeID: undefined,
 				messages: [],
-				sendRef: spawn(
-					container.get<SendMessageModule>(SendMessageModule).createMachine()
-				),
 			},
 			states: {
 				idle: {
@@ -106,7 +98,7 @@ export const createMessageMachine = (ctx: interfaces.Context) => () => {
 					>({
 						query: Op.GetMessageDocument,
 						variables: {
-							toID: "",
+							toID: ctx.nodeID!,
 						},
 						fetchPolicy: "network-only",
 					});
@@ -125,7 +117,6 @@ export const createMessageMachine = (ctx: interfaces.Context) => () => {
 		}
 	);
 };
-
 
 export type MessageMachineFactory = ReturnType<typeof createMessageMachine>;
 export const MessageMachineFactory = Symbol("MessageMachineFactory");

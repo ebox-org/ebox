@@ -10,11 +10,12 @@ import {
 	RegisterMutation,
 } from "./operations.generated";
 import { LocationMachine, LocationModule } from "../location";
-import { MessageMachine, SetNodeIDEvent } from "../message";
+import { MessageMachine } from "../message";
 import { interfaces } from "inversify";
 import { MessageModule } from "../message";
 import { SendMachine, SendMessageModule } from "../send-message";
 import { type } from "os";
+import { SetNodeIDEvent } from "../../internals/common-event";
 
 export interface NodeMachineCtx {
 	nodeID?: string;
@@ -76,6 +77,7 @@ export const createNodeMachine = (ctx: interfaces.Context) => () => {
 							actions: [
 								"setNodeID",
 								"sendNodeIDToMessageMachine",
+								"sendNodeIDToSendMachine",
 								"sendNodeIDToLocationMachine",
 							],
 							target: "registered",
@@ -127,6 +129,17 @@ export const createNodeMachine = (ctx: interfaces.Context) => () => {
 					},
 					{
 						to: (ctx) => ctx.messageRef,
+					}
+				),
+				sendNodeIDToSendMachine: send(
+					(ctx, event: any) => {
+						return {
+							type: "SET_NODE_ID",
+							nodeID: event.data,
+						} as SetNodeIDEvent;
+					},
+					{
+						to: (ctx) => ctx.sendRef,
 					}
 				),
 				sendNodeIDToLocationMachine: send(

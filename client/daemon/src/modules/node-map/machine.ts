@@ -8,6 +8,7 @@ import {
 	FindNearByNodesQueryVariables,
 	FindNearByNodesQuery,
 } from "./operations.generated";
+import { SetNodeIDEvent } from "../../internals/common-event";
 
 export interface NearbyNode {
 	id: string;
@@ -19,10 +20,6 @@ export interface NodeMapMachineCtx {
 	currentNodeID?: string;
 }
 
-export type SetNodeIDEvent = {
-	type: "SET_NODE_ID";
-	nodeID: string;
-};
 
 export type NodeMapMachineEvents = SetNodeIDEvent;
 

@@ -10,15 +10,11 @@ import {
 	UpdateLocationMutationVariables,
 } from "./operations.generated";
 import { interfaces } from "inversify";
+import { SetNodeIDEvent } from "../../internals/common-event";
 
 export interface NodeMachineCtx {
 	nodeID?: string;
 }
-
-export type SetNodeIDEvent = {
-	type: "SET_NODE_ID";
-	nodeID: string;
-};
 
 export type LocationMachineEvent = SetNodeIDEvent;
 

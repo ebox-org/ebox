@@ -2,17 +2,20 @@ import { interfaces } from "inversify";
 import { assign, createMachine, sendParent } from "xstate";
 import * as Ports from "../../ports";
 import * as Op from "../message/operations.generated";
+import { SetNodeIDEvent } from "../../internals/common-event";
 
-export type SendMachineEvent = {
+export interface SendMachineCtx {
+	nodeID?: string;
+}
+
+export type SendMessageEvent = {
 	type: "SEND";
 	toID: string;
 	content: string;
 	msgType?: string;
 };
 
-export interface SendMachineCtx {
-	nodeID?: string;
-}
+export type SendMachineEvent = SetNodeIDEvent | SendMessageEvent;
 
 export const createSendMachine = (ctx: interfaces.Context) => () => {
 	const logger = ctx.container
@@ -23,14 +26,14 @@ export const createSendMachine = (ctx: interfaces.Context) => () => {
 
 	return createMachine<SendMachineCtx, SendMachineEvent>(
 		{
-			id: "sendMessage",
+			id: "send",
 			initial: "idle",
 			context: { nodeID: undefined },
-			// on: {
-			// 	SEND: {
-			// 		actions: ["scheduleSend"],
-			// 	},
-			// },
+			on: {
+				SET_NODE_ID: {
+					actions: [assign((ctx, event) => ({ nodeID: event.nodeID }))],
+				},
+			},
 			states: {
 				idle: {
 					on: {
@@ -54,12 +57,10 @@ export const createSendMachine = (ctx: interfaces.Context) => () => {
 		{
 			actions: {
 				signalFetch: sendParent("GET"),
-				// scheduleSend: assign((ctx, event) => {
-				// 	return {};
-				// }),
 			},
 			services: {
-				sendMessage: async (ctx, event) => {
+				sendMessage: async (ctx, _event) => {
+					const event = _event as SendMessageEvent;
 					logger.debug("start get message");
 
 					const res = await Api.mutate<
@@ -71,7 +72,7 @@ export const createSendMachine = (ctx: interfaces.Context) => () => {
 							msgInput: {
 								toID: event.toID,
 								content: event.content,
-								fromID: "",
+								fromID: ctx.nodeID!,
 								messageType: event.msgType ?? "text",
 							},
 						},
