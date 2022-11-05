@@ -17,103 +17,100 @@ export interface Message {
 }
 
 export interface MessageCtx {
-	nodeID: string;
+	nodeID?: string;
 	messages: Message[];
 	sendRef: ActorRefFrom<SendMachine>;
 }
 
-export const createMessageMachine =
-	(ctx: interfaces.Context) => (nodeID: string) => {
-		const container = ctx.container;
+export const createMessageMachine = (ctx: interfaces.Context) => () => {
+	const container = ctx.container;
 
-		const logger = container
-			.get<Ports.LoggerFactory>(Ports.LoggerFactory)
-			.createLogger("message");
+	const logger = container
+		.get<Ports.LoggerFactory>(Ports.LoggerFactory)
+		.createLogger("message");
 
-		const Api = container.get<Ports.Api>(Ports.Api);
+	const Api = container.get<Ports.Api>(Ports.Api);
 
-		return createMachine<MessageCtx>(
-			{
-				id: "message",
-				initial: "idle",
-				context: {
-					nodeID,
-					messages: [],
-					sendRef: spawn(
-						container
-							.get<SendMessageModule>(SendMessageModule)
-							.createMachine(nodeID)
-					),
+	return createMachine<MessageCtx>(
+		{
+			id: "message",
+			initial: "idle",
+			context: {
+				nodeID: undefined,
+				messages: [],
+				sendRef: spawn(
+					container.get<SendMessageModule>(SendMessageModule).createMachine()
+				),
+			},
+			states: {
+				idle: {
+					always: {
+						target: "fetching",
+					},
 				},
-				states: {
-					idle: {
-						always: {
+				fetching: {
+					invoke: {
+						src: "getMessages",
+						onDone: {
+							target: "fetched",
+							actions: ["setMessages"],
+						},
+						onError: "fetchedFailed",
+					},
+				},
+				fetched: {
+					after: {
+						2000: {
 							target: "fetching",
 						},
 					},
-					fetching: {
-						invoke: {
-							src: "getMessages",
-							onDone: {
-								target: "fetched",
-								actions: ["setMessages"],
-							},
-							onError: "fetchedFailed",
-						},
-					},
-					fetched: {
-						after: {
-							2000: {
-								target: "fetching",
-							},
-						},
-					},
-					fetchedFailed: {
-						after: {
-							5000: "fetching",
-						},
+				},
+				fetchedFailed: {
+					after: {
+						5000: "fetching",
 					},
 				},
 			},
-			{
-				actions: {
-					setMessages: assign((ctx, event) => {
-						const messages = event.data;
+		},
+		{
+			actions: {
+				setMessages: assign((ctx, event) => {
+					const messages = event.data;
 
-						return {
-							messages,
-						};
-					}),
+					return {
+						messages,
+					};
+				}),
+			},
+			services: {
+				getMessages: async (ctx, event) => {
+					logger.debug("start get message");
+
+					const res = await Api.query<
+						Op.GetMessageQuery,
+						Op.GetMessageQueryVariables
+					>({
+						query: Op.GetMessageDocument,
+						variables: {
+							toID: "",
+						},
+						fetchPolicy: "network-only",
+					});
+
+					if (res.errors) {
+						throw res.errors;
+					}
+
+					const messages = res.data?.getMessage ?? [];
+
+					logger.info("get message done");
+
+					return messages;
 				},
-				services: {
-					getMessages: async (ctx, event) => {
-						logger.debug("start get message");
-
-						const res = await Api.query<
-							Op.GetMessageQuery,
-							Op.GetMessageQueryVariables
-						>({
-							query: Op.GetMessageDocument,
-							variables: {
-								toID: nodeID,
-							},
-							fetchPolicy: "network-only",
-						});
-
-						if (res.errors) {
-							throw res.errors;
-						}
-
-						const messages = res.data?.getMessage ?? [];
-
-						logger.info("get message done");
-
-						return messages;
-					},
-				},
-			}
-		);
-	};
+			},
+		}
+	);
+};
 
 // export type SendMachineEvent = {
 // 	type: "SEND";

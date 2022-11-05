@@ -4,7 +4,7 @@ import { Daemon } from "../../state-machine";
 
 export function Node() {
 	const nodeActor = useSelector(
-		Daemon.Root.Actor,
+		Daemon.RootActor,
 		(ref) => ref.context.nodeRef
 	);
 

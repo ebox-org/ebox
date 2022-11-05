@@ -1,4 +1,4 @@
-import { ActorRefFrom, assign, createMachine, spawn } from "xstate";
+import { ActorRefFrom, assign, createMachine, send, spawn } from "xstate";
 import { DaemonContainer } from "../../container";
 import * as Ports from "../../ports";
 import { faker } from "@faker-js/faker";
@@ -14,16 +14,19 @@ import { MessageMachine } from "../message";
 import { interfaces } from "inversify";
 import { MessageModule } from "../message";
 import { SendMachine } from "../send-message";
+import { type } from "os";
 
 export interface NodeMachineCtx {
 	nodeID?: string;
 	locationRef?: ActorRefFrom<LocationMachine>;
-	messageRef?: ActorRefFrom<MessageMachine>;
+	messageRef: ActorRefFrom<MessageMachine>;
 }
 
 export type ResetNode = {
 	type: "RESET_NODE";
 };
+
+export type NodeMachineEvent = ResetNode;
 
 const Key = "node-id";
 
@@ -38,11 +41,15 @@ export const createNodeMachine = (ctx: interfaces.Context) => () => {
 
 	const Api = ctx.container.get<Ports.Api>(Ports.Api);
 
-	return createMachine<NodeMachineCtx>(
+	return createMachine<NodeMachineCtx, NodeMachineEvent>(
 		{
 			id: "node",
 			initial: "inactive",
-			context: {},
+			context: {
+				nodeID: undefined,
+				locationRef: undefined,
+				messageRef: {} as any,
+			},
 			states: {
 				inactive: {
 					always: {
@@ -53,7 +60,7 @@ export const createNodeMachine = (ctx: interfaces.Context) => () => {
 					invoke: {
 						src: "register",
 						onDone: {
-							actions: "setNodeID",
+							actions: ["setNodeID", "sendNodeID"],
 							target: "registered",
 						},
 						onError: "registerFailed",
@@ -94,6 +101,14 @@ export const createNodeMachine = (ctx: interfaces.Context) => () => {
 						nodeID: event.data,
 					};
 				}),
+				sendNodeID: send(
+					(ctx, event: any) => {
+						return { type: "SET_NODE_ID", nodeID: event.data };
+					},
+					{
+						to: (ctx) => ctx.messageRef,
+					}
+				),
 				spawnLocation: assign((ctx, event) => {
 					const locationRef = spawn(
 						container
@@ -108,16 +123,16 @@ export const createNodeMachine = (ctx: interfaces.Context) => () => {
 				spawnMessageMachine: assign((ctx, event) => {
 					return {
 						messageRef: spawn(
-							container
-								.get<MessageModule>(MessageModule)
-								.createMachine(ctx.nodeID!),
+							container.get<MessageModule>(MessageModule).createMachine(),
 							"message"
 						),
 					};
 				}),
 			},
 			services: {
-				register: async (ctx, event) => {
+				register: async (ctx, _event) => {
+					const event = _event;
+
 					logger.debug("registering node");
 
 					const kv = await kvStorage.open("modules.node");

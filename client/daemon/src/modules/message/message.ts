@@ -32,7 +32,7 @@ export class MessageModule {
 		this.logger = this.loggerFactory.createLogger("Message");
 	}
 
-	createMachine(nodeID: string) {
-		return this.machineFactory(nodeID);
+	createMachine() {
+		return this.machineFactory();
 	}
 }

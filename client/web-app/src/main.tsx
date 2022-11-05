@@ -14,8 +14,9 @@ import { MessageInput } from "./features/message";
 import { CssBaseline } from "@mui/material";
 
 function App() {
-	const running = useSelector(Daemon.Root.Actor, (s) => {
-		return s.matches("running");
+	const running = useSelector(Daemon.RootActor, (s) => {
+		s.context.nodeRef?.getSnapshot();
+		return s?.matches("running");
 	});
 
 	if (running) {

@@ -2,8 +2,7 @@ import { interpret } from "xstate";
 import { inspect } from "@xstate/inspect";
 import { Container, inject, injectable } from "inversify";
 import { SendMessageModule } from "./modules/send-message";
-import { RootModule } from "./modules/root/root";
-import { DaemonModule } from "./daemon";
+import { DaemonModule } from "./modules/daemon";
 import { NodeModule } from "./modules/node";
 import { NodeMapModule } from "./modules/node-map";
 import { getModuleMetadata } from "./internals/decorators";
@@ -21,7 +20,6 @@ export class Boostrapper {
 	static readonly modules = [
 		ContextModule,
 		DaemonModule,
-		RootModule,
 		NodeModule,
 		NodeMapModule,
 		LocationModule,
@@ -41,6 +39,6 @@ export class Boostrapper {
 
 	bootstrap() {
 		this.bindAll();
-		return this.container.resolve(DaemonModule).start();
+		return this.container.resolve(DaemonModule);
 	}
 }

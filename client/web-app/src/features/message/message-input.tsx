@@ -10,25 +10,20 @@ import {
 	Radio,
 	RadioGroup,
 } from "@mui/material";
-import { SendMachine } from "@ebox/daemon/dist/src/modules/message";
+import { interfaces } from "@ebox/daemon";
 // import {RadioGroup} from '@mui/base'
 
 export const MessageInput = () => {
-	// const nodeRef = useSelector(
-	// 	Daemon.Root.Actor,
-	// 	(ref) => ref.context.nodeRef
-	// );
-
-	// const messageRef = useSelector(nodeRef!, (s) => {
-	// 	return s.context.messageRef?.getSnapshot()?.context;
-	// });
-
-	const sendRef = useSelector(
-		Daemon.Root.Actor,
-		(ref) =>
-			ref.context.nodeRef?.getSnapshot()?.context.messageRef?.getSnapshot()
-				?.context.sendRef
+	const nodeRef = useSelector(
+		Daemon.RootActor,
+		(ref) => ref.context.nodeRef
 	);
+
+	const messageRef = useSelector(nodeRef!, (s) => {
+		return s.context.messageRef;
+	});
+
+	const sendRef = useSelector(messageRef!, (ref) => ref.context?.sendRef);
 
 	if (!sendRef) {
 		return <div>Not ready</div>;
@@ -38,7 +33,7 @@ export const MessageInput = () => {
 };
 
 interface MessageInputReady {
-	sendRef: ActorRefFrom<SendMachine>;
+	sendRef: ActorRefFrom<interfaces.SendMachine>;
 }
 
 function MessageInputReady({ sendRef }: MessageInputReady) {

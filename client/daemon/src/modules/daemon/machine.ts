@@ -4,20 +4,20 @@ import * as Ports from "../../ports";
 import { NodeModule, NodeMachineFactory } from "../node";
 import { NodeMapModule, NodeMapMachine } from "../node-map";
 
-export interface RootMachineCtx {
+export interface DaemonMachineCtx {
 	nodeRef?: ActorRefFrom<NodeMachineFactory>;
 	nodeMapRef?: ActorRefFrom<NodeMapMachine>;
 }
-export const createRootMachine = (ctx: interfaces.Context) => () => {
+export const createDaemonMachine = (ctx: interfaces.Context) => () => {
 	const logger = ctx.container
 		.get<Ports.LoggerFactory>(Ports.LoggerFactory)
 		.createLogger("daemon");
 
-	return createMachine<RootMachineCtx>(
+	return createMachine<DaemonMachineCtx>(
 		{
-			id: "root",
+			id: "daemon",
 			initial: "initial",
-			context: {} as RootMachineCtx,
+			context: {} as DaemonMachineCtx,
 			states: {
 				initial: {
 					always: {
@@ -68,7 +68,7 @@ export const createRootMachine = (ctx: interfaces.Context) => () => {
 		},
 		{
 			actions: {
-				spawnNodeMachine: assign<RootMachineCtx>(() => {
+				spawnNodeMachine: assign<DaemonMachineCtx>(() => {
 					return {
 						nodeRef: spawn(
 							ctx.container.get<NodeModule>(NodeModule).createMachine(),
@@ -76,7 +76,7 @@ export const createRootMachine = (ctx: interfaces.Context) => () => {
 						),
 					};
 				}),
-				spawnNodeMapMachine: assign<RootMachineCtx>(() => {
+				spawnNodeMapMachine: assign<DaemonMachineCtx>(() => {
 					return {
 						nodeMapRef: spawn(
 							ctx.container.get<NodeMapModule>(NodeMapModule).createMachine(),

@@ -1,5 +1,5 @@
 import { Container } from "inversify";
-import { Constructor, DaemonModule } from "./interfaces";
+import { Constructor, IModule } from "./interfaces";
 
 const DaemonModule = Symbol("DaemonModule");
 
@@ -19,11 +19,14 @@ function buildOptions(target: Constructor, options?: ModuleOption) {
 	};
 }
 
+
+
 export function Module(options?: ModuleOption) {
-	return function (target: Constructor) {
+	return function <C extends Constructor>(target: C) {
 		const theOptions = buildOptions(target, options);
 
 		Reflect.defineMetadata(DaemonModule, theOptions, target);
+
 		return target;
 	};
 }

@@ -11,7 +11,7 @@ import {
 import { LocationMachine } from "../location";
 // import { createMessageMachine, MessageMachine } from "../message";
 import { inject, injectable } from "inversify";
-import { DaemonModule } from "../../internals/interfaces";
+import { IModule } from "../../internals/interfaces";
 import { createNodeMachine } from "./machine";
 import { Module } from "../../internals/decorators";
 

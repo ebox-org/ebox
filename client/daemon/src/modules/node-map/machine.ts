@@ -9,7 +9,7 @@ import {
 	FindNearByNodesQuery,
 } from "./operations.generated";
 
-interface NearbyNode {
+export interface NearbyNode {
 	id: string;
 	distance: number;
 }

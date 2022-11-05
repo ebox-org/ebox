@@ -2954,6 +2954,7 @@ __metadata:
     rollup: ^3.2.5
     rollup-plugin-typescript2: ^0.34.1
     rome: next
+    tree-model: ^1.0.7
     typescript: ^4.8.4
     vite: ^3.1.4
     xstate: ^4.33.6
@@ -3523,6 +3524,13 @@ __metadata:
     make-dir: ^3.0.2
     pkg-dir: ^4.1.0
   checksum: 1e61c2e64f5c0b1c535bd85939ae73b0e5773142713273818cc0b393ee3555fb0fd44e1a5b161b8b6c3e03e98c2fcc9c227d784850a13a90a8ab576869576817
+  languageName: node
+  linkType: hard
+
+"find-insert-index@npm:0.0.1":
+  version: 0.0.1
+  resolution: "find-insert-index@npm:0.0.1"
+  checksum: a77d17cfeb258c8b0618f92ec177baa2aa0ab5ef9525c27422d2b82828ab61ac1452000df0fbcabe75b2de4787133daefda573c9cab2efb15b2f517b29e79929
   languageName: node
   linkType: hard
 
@@ -4565,6 +4573,13 @@ __metadata:
   version: 1.4.1
   resolution: "merge2@npm:1.4.1"
   checksum: 7268db63ed5169466540b6fb947aec313200bcf6d40c5ab722c22e242f651994619bcd85601602972d3c85bd2cc45a358a4c61937e9f11a061919a1da569b0c2
+  languageName: node
+  linkType: hard
+
+"mergesort@npm:0.0.1":
+  version: 0.0.1
+  resolution: "mergesort@npm:0.0.1"
+  checksum: f174d414944950b8d504ca7392790de74c8c6064398742a46ac3a90d993be5b1157476b14d34aa909277a939085997eb9941654efa5c4dc38aa145a7f64df7e7
   languageName: node
   linkType: hard
 
@@ -5889,6 +5904,16 @@ __metadata:
   version: 0.0.3
   resolution: "tr46@npm:0.0.3"
   checksum: 726321c5eaf41b5002e17ffbd1fb7245999a073e8979085dacd47c4b4e8068ff5777142fc6726d6ca1fd2ff16921b48788b87225cbc57c72636f6efa8efbffe3
+  languageName: node
+  linkType: hard
+
+"tree-model@npm:^1.0.7":
+  version: 1.0.7
+  resolution: "tree-model@npm:1.0.7"
+  dependencies:
+    find-insert-index: 0.0.1
+    mergesort: 0.0.1
+  checksum: 4a4a5cc96e9276e65229ba0e4b1324c08328bee657cb3864791fe16f0fc04334410338e486ae74311e2d6172139b3d4cd3c0c2aa355272123cf3e3d347ec045e
   languageName: node
   linkType: hard
 

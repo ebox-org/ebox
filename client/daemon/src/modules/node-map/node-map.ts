@@ -1,14 +1,21 @@
 import { inject, injectable } from "inversify";
+import { ActorRefFrom, StateFrom } from "xstate";
 import { Context } from "../../internals/context-module";
 import { Module } from "../../internals/decorators";
-import { DaemonModule } from "../../internals/interfaces";
-import { RootModule } from "../root";
+import { IModule } from "../../internals/interfaces";
+import { DaemonMachine, DaemonMachineRef, DaemonModule } from "../daemon";
 import { createNodeMapMachine } from "./machine";
 
 export type NodeMapMachineFactory = ReturnType<typeof createNodeMapMachine>;
 export const NodeMapMachineFactory = Symbol("NodeMapMachineFactory");
 
 export type NodeMapMachine = ReturnType<NodeMapMachineFactory>;
+
+const selectNodeMap = (state: StateFrom<DaemonMachine>) =>
+	state.context.nodeMapRef;
+
+const selectNearbyNodes = (state: StateFrom<DaemonMachine>) =>
+	selectNodeMap(state)?.getSnapshot()?.context.nearbyNodes;
 
 @injectable()
 @Module({
@@ -33,9 +40,8 @@ export class NodeMapModule {
 		return this.machineFactory();
 	}
 
-	get Actor() {
-		const root = this.context.container.get<RootModule>(RootModule);
-
-		return root.Actor.getSnapshot().context.nodeMapRef;
-	}
+	readonly Selector = {
+		selectNodeMap,
+		selectNearbyNodes,
+	};
 }

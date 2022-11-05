@@ -11,7 +11,7 @@ export default defineConfig({
 	envDir: resolve(__dirname, "../env"),
 	resolve: {
 		alias: {
-			// "@ebox/daemon": resolve(__dirname, "../../daemon/src"),
+			"@ebox/daemon": resolve(__dirname, "../../daemon/dist/esm/index.js"),
 		},
 	},
 	build: {

@@ -3,18 +3,32 @@ import { useActor, useSelector } from "@xstate/react";
 import { Daemon } from "../../state-machine";
 
 export const NodeMap = () => {
-	// todo selector
-	if (!Daemon.NodeMap.Actor) {
+	const nearbyNodes = useSelector(
+		Daemon.RootActor,
+		Daemon.NodeMap.Selector.selectNearbyNodes
+	);
+
+	if (!nearbyNodes) {
 		return null;
 	}
 
-	return <ReadyNodeMap />;
+	return (
+		<div>
+			Node map:
+			{nearbyNodes?.map((n) => (
+				<div key={n?.id}>
+					{n?.id} - {n?.distance}
+				</div>
+			))}
+		</div>
+	);
 };
 
 function ReadyNodeMap() {
-	const nearbyNodes = useSelector(Daemon.NodeMap.Actor!, (s) => {
-		return s.context.nearbyNodes ?? [];
-	});
+	const nearbyNodes = useSelector(
+		Daemon.RootActor,
+		Daemon.NodeMap.Selector.selectNearbyNodes
+	);
 
 	// if (re.loading) {
 	// 	return <div>loading</div>;

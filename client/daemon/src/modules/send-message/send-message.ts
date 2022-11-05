@@ -3,22 +3,10 @@ import { Container, inject, injectable } from "inversify";
 import { Module } from "../../internals/decorators";
 import { createSendMachine } from "./machine";
 
-export type SendMachineEvent = {
-	type: "SEND";
-	toID: string;
-	content: string;
-	msgType?: string;
-};
-
-export interface SendMachineCtx {
-	nodeID: string;
-}
-
 export type SendMachineFactory = ReturnType<typeof createSendMachine>;
+export const SendMachineFactory = Symbol("SendMachineFactory");
 
 export type SendMachine = ReturnType<SendMachineFactory>;
-
-export const SendMachineFactory = Symbol("SendMachineFactory");
 
 @injectable()
 @Module({
@@ -33,7 +21,7 @@ export class SendMessageModule {
 	@inject(SendMachineFactory)
 	private createSendMachine!: SendMachineFactory;
 
-	createMachine(toID: string) {
-		return this.createSendMachine(toID);
+	createMachine() {
+		return this.createSendMachine();
 	}
 }
