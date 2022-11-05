@@ -1,2 +1,2 @@
-export * from "./machine";
-export * from "./send-message";
+export * from "./interface";
+export { SendMessageModule } from "./send-message";

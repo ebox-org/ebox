@@ -2,12 +2,13 @@ import { interfaces } from "inversify";
 import { createMachine, ActorRefFrom, assign, spawn } from "xstate";
 import * as Ports from "../../ports";
 import { NodeModule, NodeMachineFactory } from "../node";
-import { NodeMapModule, NodeMapMachine } from "../node-map";
+import { NodeMapMachine, NodeMapModule } from "../node-map";
 
 export interface DaemonMachineCtx {
 	nodeRef?: ActorRefFrom<NodeMachineFactory>;
 	nodeMapRef?: ActorRefFrom<NodeMapMachine>;
 }
+
 export const createDaemonMachine = (ctx: interfaces.Context) => () => {
 	const logger = ctx.container
 		.get<Ports.LoggerFactory>(Ports.LoggerFactory)

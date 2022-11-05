@@ -22,6 +22,13 @@ export interface MessageCtx {
 	sendRef: ActorRefFrom<SendMachine>;
 }
 
+export type SetNodeIDEvent = {
+	type: "SET_NODE_ID";
+	nodeID: string;
+};
+
+export type MessageMachineEvent = SetNodeIDEvent;
+
 export const createMessageMachine = (ctx: interfaces.Context) => () => {
 	const container = ctx.container;
 
@@ -31,7 +38,7 @@ export const createMessageMachine = (ctx: interfaces.Context) => () => {
 
 	const Api = container.get<Ports.Api>(Ports.Api);
 
-	return createMachine<MessageCtx>(
+	return createMachine<MessageCtx, MessageMachineEvent>(
 		{
 			id: "message",
 			initial: "idle",
@@ -44,8 +51,15 @@ export const createMessageMachine = (ctx: interfaces.Context) => () => {
 			},
 			states: {
 				idle: {
-					always: {
-						target: "fetching",
+					on: {
+						SET_NODE_ID: {
+							actions: assign((ctx, event) => {
+								return {
+									nodeID: event.nodeID,
+								};
+							}),
+							target: "fetching",
+						},
 					},
 				},
 				fetching: {
@@ -74,7 +88,7 @@ export const createMessageMachine = (ctx: interfaces.Context) => () => {
 		},
 		{
 			actions: {
-				setMessages: assign((ctx, event) => {
+				setMessages: assign((ctx, event: any) => {
 					const messages = event.data;
 
 					return {
@@ -112,82 +126,8 @@ export const createMessageMachine = (ctx: interfaces.Context) => () => {
 	);
 };
 
-// export type SendMachineEvent = {
-// 	type: "SEND";
-// 	toID: string;
-// 	msgType?: string;
-// 	content: string;
-// };
 
-// export interface SendMachineCtx {
-// 	nodeID: string;
-// }
+export type MessageMachineFactory = ReturnType<typeof createMessageMachine>;
+export const MessageMachineFactory = Symbol("MessageMachineFactory");
 
-// export const createSendMachine = (
-// 	container: DaemonContainer,
-// 	nodeID: string
-// ) => {
-// 	const logger = container.get(Ports.LoggerFactory).createLogger("node");
-
-// 	const Api = container.get(Ports.Api);
-
-// 	return createMachine<SendMachineCtx, SendMachineEvent>(
-// 		{
-// 			id: "sendMessage",
-// 			initial: "idle",
-// 			context: { nodeID },
-// 			states: {
-// 				idle: {
-// 					on: {
-// 						SEND: {
-// 							target: "sending",
-// 						},
-// 					},
-// 				},
-// 				sending: {
-// 					invoke: {
-// 						src: "sendMessage",
-// 						onDone: {
-// 							actions: ["signalFetch"],
-// 							target: "idle",
-// 						},
-// 						onError: "idle",
-// 					},
-// 				},
-// 			},
-// 		},
-// 		{
-// 			actions: {
-// 				signalFetch: sendParent("GET"),
-// 			},
-// 			services: {
-// 				sendMessage: async (ctx, event) => {
-// 					logger.debug("start get message");
-
-// 					const res = await Api.mutate<
-// 						Op.SendMsgToMutation,
-// 						Op.SendMsgToMutationVariables
-// 					>({
-// 						mutation: Op.SendMsgToDocument,
-// 						variables: {
-// 							msgInput: {
-// 								toID: event.toID,
-// 								content: event.content,
-// 								fromID: ctx.nodeID,
-// 								messageType: event.msgType ?? "text",
-// 							},
-// 						},
-// 					});
-
-// 					if (res.errors) {
-// 						throw res.errors;
-// 					}
-
-// 					logger.info("message sent");
-// 				},
-// 			},
-// 		}
-// 	);
-// };
-
-// export type SendMachine = ReturnType<typeof createSendMachine>;
+export type MessageMachine = ReturnType<MessageMachineFactory>;

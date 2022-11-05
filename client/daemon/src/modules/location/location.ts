@@ -27,8 +27,8 @@ export class LocationModule {
 		private locationMachineFactory: LocationMachineFactory
 	) {}
 
-	public createMachine(nodeID: string) {
-		return this.locationMachineFactory(nodeID);
+	public createMachine() {
+		return this.locationMachineFactory();
 	}
 
 	off() {}

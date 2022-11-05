@@ -87,3 +87,8 @@ export const createSendMachine = (ctx: interfaces.Context) => () => {
 		}
 	);
 };
+
+export type SendMachineFactory = ReturnType<typeof createSendMachine>;
+export const SendMachineFactory = Symbol("SendMachineFactory");
+
+export type SendMachine = ReturnType<SendMachineFactory>;

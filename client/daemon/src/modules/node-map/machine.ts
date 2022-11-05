@@ -1,6 +1,6 @@
 import { interfaces } from "inversify";
 import { over } from "ok-value-error-reason";
-import { assign, createMachine } from "xstate";
+import { ActorRefFrom, assign, createMachine } from "xstate";
 import { DaemonContainer } from "../../container";
 import * as Ports from "../../ports";
 import {
@@ -16,7 +16,15 @@ export interface NearbyNode {
 
 export interface NodeMapMachineCtx {
 	nearbyNodes: NearbyNode[];
+	currentNodeID?: string;
 }
+
+export type SetNodeIDEvent = {
+	type: "SET_NODE_ID";
+	nodeID: string;
+};
+
+export type NodeMapMachineEvents = SetNodeIDEvent;
 
 export const createNodeMapMachine = (ctx: interfaces.Context) => () => {
 	const container = ctx.container;
@@ -28,12 +36,21 @@ export const createNodeMapMachine = (ctx: interfaces.Context) => () => {
 
 	const Api = container.get<Ports.Api>(Ports.Api);
 
-	return createMachine<NodeMapMachineCtx>(
+	return createMachine<NodeMapMachineCtx, NodeMapMachineEvents>(
 		{
 			id: "NodeMap",
 			initial: "idle",
 			context: {
 				nearbyNodes: [],
+			},
+			on: {
+				SET_NODE_ID: {
+					actions: assign((ctx, event) => {
+						return {
+							currentNodeID: event.nodeID,
+						};
+					}),
+				},
 			},
 			states: {
 				idle: {
@@ -111,3 +128,11 @@ export const createNodeMapMachine = (ctx: interfaces.Context) => () => {
 		}
 	);
 };
+
+export type NodeMapMachineFactory = ReturnType<typeof createNodeMapMachine>;
+
+export const NodeMapMachineFactory = Symbol("NodeMapMachineFactory");
+
+export type NodeMapMachine = ReturnType<NodeMapMachineFactory>;
+
+export type NodeMapActorRef = ActorRefFrom<NodeMapMachine>;

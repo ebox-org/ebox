@@ -28,7 +28,7 @@ const cjs = defineConfig({
 	},
 	plugins: [
 		typescript({
-			tsconfig: "./misc/tsconfig.esm.json",
+			tsconfig: "./misc/tsconfig.cjs.json",
 		}),
 		commonjs(),
 	],

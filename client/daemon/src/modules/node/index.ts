@@ -1,3 +1,4 @@
-export * from './node';
+export * from "./interface";
+export { NodeModule } from "./node";
 // export * from './machine';
-export * from './operations.generated';
+// export * from './operations.generated';

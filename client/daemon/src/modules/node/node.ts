@@ -12,13 +12,8 @@ import { LocationMachine } from "../location";
 // import { createMessageMachine, MessageMachine } from "../message";
 import { inject, injectable } from "inversify";
 import { IModule } from "../../internals/interfaces";
-import { createNodeMachine } from "./machine";
+import { createNodeMachine, NodeMachineFactory } from "./machine";
 import { Module } from "../../internals/decorators";
-
-export type NodeMachineFactory = ReturnType<typeof createNodeMachine>;
-export const NodeMachineFactory = Symbol("NodeMachineFactory");
-
-export type NodeMachine = ReturnType<NodeMachineFactory>;
 
 @injectable()
 @Module({

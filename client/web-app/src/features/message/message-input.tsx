@@ -13,30 +13,13 @@ import {
 import { interfaces } from "@ebox/daemon";
 // import {RadioGroup} from '@mui/base'
 
-export const MessageInput = () => {
-	const nodeRef = useSelector(
-		Daemon.RootActor,
-		(ref) => ref.context.nodeRef
-	);
-
-	const messageRef = useSelector(nodeRef!, (s) => {
-		return s.context.messageRef;
-	});
-
-	const sendRef = useSelector(messageRef!, (ref) => ref.context?.sendRef);
-
-	if (!sendRef) {
-		return <div>Not ready</div>;
-	}
-
-	return <MessageInputReady sendRef={sendRef} />;
-};
-
-interface MessageInputReady {
-	sendRef: ActorRefFrom<interfaces.SendMachine>;
+export interface MessageInput {
+	actor: ActorRefFrom<interfaces.SendMachine>;
 }
 
-function MessageInputReady({ sendRef }: MessageInputReady) {
+export const MessageInput = (props: MessageInput) => {
+	const sendRef = props.actor;
+
 	const toRef = React.useRef<HTMLInputElement>(null);
 
 	const [cType, setCType] = React.useState<"text" | "file">("text");
@@ -96,4 +79,4 @@ function MessageInputReady({ sendRef }: MessageInputReady) {
 			</div>
 		</div>
 	);
-}
+};

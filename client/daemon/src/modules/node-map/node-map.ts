@@ -4,18 +4,17 @@ import { Context } from "../../internals/context-module";
 import { Module } from "../../internals/decorators";
 import { IModule } from "../../internals/interfaces";
 import { DaemonMachine, DaemonMachineRef, DaemonModule } from "../daemon";
-import { createNodeMapMachine } from "./machine";
-
-export type NodeMapMachineFactory = ReturnType<typeof createNodeMapMachine>;
-export const NodeMapMachineFactory = Symbol("NodeMapMachineFactory");
-
-export type NodeMapMachine = ReturnType<NodeMapMachineFactory>;
+import {
+	createNodeMapMachine,
+	NodeMapMachine,
+	NodeMapMachineFactory,
+} from "./machine";
 
 const selectNodeMap = (state: StateFrom<DaemonMachine>) =>
 	state.context.nodeMapRef;
 
-const selectNearbyNodes = (state: StateFrom<DaemonMachine>) =>
-	selectNodeMap(state)?.getSnapshot()?.context.nearbyNodes;
+const selectNearbyNodes = (state: StateFrom<NodeMapMachine>) =>
+	state.context.nearbyNodes;
 
 @injectable()
 @Module({
@@ -40,7 +39,9 @@ export class NodeMapModule {
 		return this.machineFactory();
 	}
 
-	readonly Selector = {
+	selectNearbyNodes = selectNearbyNodes;
+
+	readonly Selectors = {
 		selectNodeMap,
 		selectNearbyNodes,
 	};

@@ -1,7 +1,7 @@
 {
 	"extends": "./tsconfig.share.json",
 	"compilerOptions": {
-		"module": "CommonJS",
+		"module": "ES2020",
 		"outDir": "../dist/cjs"
 	},
 	"include": ["../src/**/*"]

@@ -1,11 +1,17 @@
 import * as React from "react";
 import { useActor, useSelector } from "@xstate/react";
 import { Daemon } from "../../state-machine";
+import { ActorRefFrom } from "xstate";
+import { interfaces } from "@ebox/daemon";
 
-export const NodeMap = () => {
+export interface NodeMap {
+	actor: interfaces.NodeMapActorRef;
+}
+
+export const NodeMap = (props: NodeMap) => {
 	const nearbyNodes = useSelector(
-		Daemon.RootActor,
-		Daemon.NodeMap.Selector.selectNearbyNodes
+		props.actor,
+		Daemon.NodeMap.selectNearbyNodes
 	);
 
 	if (!nearbyNodes) {
@@ -23,28 +29,3 @@ export const NodeMap = () => {
 		</div>
 	);
 };
-
-function ReadyNodeMap() {
-	const nearbyNodes = useSelector(
-		Daemon.RootActor,
-		Daemon.NodeMap.Selector.selectNearbyNodes
-	);
-
-	// if (re.loading) {
-	// 	return <div>loading</div>;
-	// }
-	// if (re.error || !re.data) {
-	// 	return <div>error</div>;
-	// }
-	// const nodes = re.data.findNearbyNodes;
-	return (
-		<div>
-			Node map:
-			{nearbyNodes?.map((n) => (
-				<div key={n?.id}>
-					{n?.id} - {n?.distance}
-				</div>
-			))}
-		</div>
-	);
-}

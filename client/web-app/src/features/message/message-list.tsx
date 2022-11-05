@@ -2,30 +2,17 @@ import * as React from "react";
 import { useActor, useSelector } from "@xstate/react";
 import { Daemon } from "../../state-machine";
 import { ActorRef, ActorRefFrom } from "xstate";
-import { Message, MessageMachine } from "@ebox/daemon";
+import { interfaces } from "@ebox/daemon";
 
-export const MessageList = () => {
-	const nodeRef = useSelector(
-		Daemon.RootActor,
-		(ref) => ref.context.nodeRef
-	);
+export interface MessageList {
+	actor: ActorRefFrom<interfaces.NodeMachine>;
+}
 
-	const messageRef = useSelector(nodeRef!, (s) => {
+export const MessageList = (props: MessageList) => {
+	const messageRef = useSelector(props.actor, (s) => {
 		return s.context.messageRef;
 	});
 
-	if (!messageRef) {
-		return <div>Not ready</div>;
-	}
-
-	return <ListMessage messageRef={messageRef} />;
-};
-
-interface ListMessage {
-	messageRef: ActorRefFrom<MessageMachine>;
-}
-
-function ListMessage({ messageRef }: ListMessage) {
 	const messages = useSelector(messageRef, (s) => {
 		return s.context.messages;
 	});
@@ -40,7 +27,7 @@ function ListMessage({ messageRef }: ListMessage) {
 			})}
 		</div>
 	);
-}
+};
 
 const MessageTypeMap: {
 	[key: string]: MessageRenderer;
@@ -50,11 +37,12 @@ const MessageTypeMap: {
 };
 
 interface MessageRendererProps {
-	message: Message;
+	message: interfaces.Message;
 }
+
 type MessageRenderer = (props: MessageRendererProps) => JSX.Element;
 
-function Text({ message }: { message: Message }) {
+function Text({ message }: { message: interfaces.Message }) {
 	return (
 		<div>
 			{message.fromID}: {message.content}
@@ -69,7 +57,7 @@ const FILE_API =
 const UPLOAD_API = `${FILE_API}/upload`;
 const DOWNLOAD_API = `${FILE_API}/download`;
 
-function File({ message }: { message: Message }) {
+function File({ message }: { message: interfaces.Message }) {
 	return (
 		<div>
 			{message.fromID}:{" "}

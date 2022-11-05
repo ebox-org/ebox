@@ -15,26 +15,42 @@ import { CssBaseline } from "@mui/material";
 
 function App() {
 	const running = useSelector(Daemon.RootActor, (s) => {
-		s.context.nodeRef?.getSnapshot();
 		return s?.matches("running");
 	});
 
-	if (running) {
-		return (
-			<>
-				<CssBaseline />
-				<Node />
-				<hr />
-				<NodeMap />
-				<hr />
-				<MessageInput />
-				<hr />
-				<MessageList />
-			</>
-		);
+	if (!running) {
+		return <>booting</>;
 	}
 
-	return <>booting</>;
+	return <ReadyApp />;
+}
+
+interface ReadyApp {}
+
+function ReadyApp() {
+	const nodeActor = useSelector(Daemon.RootActor, (s) => {
+		return s?.context?.nodeRef!;
+	});
+
+	const nodeMapActor = useSelector(
+		Daemon.RootActor,
+		(s) => s.context.nodeMapRef!
+	);
+
+	const sendRef = useSelector(nodeActor, (s) => s.context.sendRef);
+
+	return (
+		<>
+			<CssBaseline />
+			<Node />
+			<hr />
+			<NodeMap actor={nodeMapActor} />
+			<hr />
+			<MessageInput actor={sendRef} />
+			<hr />
+			<MessageList actor={nodeActor} />
+		</>
+	);
 }
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(

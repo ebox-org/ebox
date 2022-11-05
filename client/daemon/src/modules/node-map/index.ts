@@ -1,3 +1,2 @@
-export * from './machine';
-export * from './node-map';
-export * from './operations.generated';
+export * from "./interfaces";
+export { NodeMapModule } from "./node-map";

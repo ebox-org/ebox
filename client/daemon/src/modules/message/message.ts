@@ -3,14 +3,9 @@ import { createMachine, sendParent } from "xstate";
 import { Module } from "../../internals/decorators";
 
 import * as Ports from "../../ports";
-import { createMessageMachine } from "./machine";
+import { createMessageMachine, MessageMachineFactory } from "./machine";
 
 import * as Op from "./operations.generated";
-
-export type MessageMachineFactory = ReturnType<typeof createMessageMachine>;
-export const MessageMachineFactory = Symbol("MessageMachineFactory");
-
-export type MessageMachine = ReturnType<MessageMachineFactory>;
 
 @injectable()
 @Module({
