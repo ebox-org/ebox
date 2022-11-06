@@ -30,7 +30,9 @@ export class UploadModule {
 
 	async uploadFile(file: File) {
 		const machine = this.createMachine(file);
-		const service = interpret(machine).start();
+		const service = interpret(machine, {
+			devTools: true,
+		}).start();
 
 		const state = await waitFor(service, (s) => !!s.done);
 
