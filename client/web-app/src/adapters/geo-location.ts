@@ -1,6 +1,7 @@
 import { WebAppContainer } from "../container";
-import { Ports, injectable } from "@ebox/daemon";
+import { Ports } from "@ebox/daemon";
 import pDefer from "p-defer";
+import { injectable } from "inversify";
 
 @injectable()
 class GeoLocationImpl implements Ports.GeoLocation {

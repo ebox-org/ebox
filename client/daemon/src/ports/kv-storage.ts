@@ -1,6 +1,3 @@
-import {} from "tsyringe";
-import { Token } from "../container";
-
 export interface KVGroup {
 	getItem<T>(key: string): Promise<T | undefined>;
 	setItem<T>(key: string, value: T): Promise<void>;
@@ -13,4 +10,4 @@ export interface KVStorage {
 	destroy(name: string): Promise<void>;
 }
 
-export const KVStorage = Token.create<KVStorage>("KvStorage");
+export const KVStorage = Symbol("KvStorage");

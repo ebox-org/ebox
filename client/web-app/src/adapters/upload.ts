@@ -1,5 +1,6 @@
 import { WebAppContainer } from "../container";
-import { Ports, injectable } from "@ebox/daemon";
+import { Ports } from "@ebox/daemon";
+import { injectable } from "inversify";
 const FILE_API = "/file";
 // const FILE_API =
 // 	import.meta.env.PROD || !import.meta.env.VITE_API

@@ -9,32 +9,44 @@ import {
 	UpdateLocationMutation,
 	UpdateLocationMutationVariables,
 } from "./operations.generated";
+import { interfaces } from "inversify";
+import { SetNodeIDEvent } from "../../internals/common-event";
 
 export interface NodeMachineCtx {
-	nodeID: string;
+	nodeID?: string;
 }
 
-export const createLocationMachine = (
-	container: DaemonContainer,
-	nodeID: string
-) => {
-	const logger = container.get(Ports.LoggerFactory).createLogger("node");
+export type LocationMachineEvent = SetNodeIDEvent;
 
-	const kvStorage = container.get(Ports.KVStorage);
+export const createLocationMachine = (ctx: interfaces.Context) => () => {
+	const container = ctx.container;
 
-	const Api = container.get(Ports.Api);
+	const logger = container
+		.get<Ports.LoggerFactory>(Ports.LoggerFactory)
+		.createLogger("node");
 
-	const geo = container.get(Ports.GeoLocation);
+	const kvStorage = container.get<Ports.KVStorage>(Ports.KVStorage);
 
-	return createMachine<NodeMachineCtx>(
+	const Api = container.get<Ports.Api>(Ports.Api);
+
+	const geo = container.get<Ports.GeoLocation>(Ports.GeoLocation);
+
+	return createMachine<NodeMachineCtx, LocationMachineEvent>(
 		{
 			id: "location",
 			initial: "idle",
-			context: { nodeID },
+			context: { nodeID: undefined },
 			states: {
 				idle: {
-					always: {
-						target: "updating",
+					on: {
+						SET_NODE_ID: {
+							actions: assign((ctx, event) => {
+								return {
+									nodeID: event.nodeID,
+								};
+							}),
+							target: "updating",
+						},
 					},
 				},
 				updating: {
@@ -76,7 +88,7 @@ export const createLocationMachine = (
 						variables: {
 							lat: coords.value.latitude,
 							long: coords.value.longitude,
-							nodeID: ctx.nodeID,
+							nodeID: ctx.nodeID!,
 						},
 					});
 
@@ -88,5 +100,3 @@ export const createLocationMachine = (
 		}
 	);
 };
-
-export type LocationMachine = ReturnType<typeof createLocationMachine>;

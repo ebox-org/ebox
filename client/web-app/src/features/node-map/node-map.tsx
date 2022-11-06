@@ -1,25 +1,22 @@
 import * as React from "react";
 import { useActor, useSelector } from "@xstate/react";
-import { useDaemonActor } from "../../state-machine";
+import { Daemon } from "../../state-machine";
+import { ActorRefFrom } from "xstate";
+import { interfaces } from "@ebox/daemon";
 
-export const NodeMap = () => {
-	const nodeMap = useDaemonActor((s) => {
-		return s.context.nodeMapRef;
-	});
+export interface NodeMap {
+	actor: interfaces.NodeMapActorRef;
+}
 
-	const nearbyNodes = useSelector(nodeMap!, (s) => {
-		return s.context?.nearbyNodes ?? [];
-	});
+export const NodeMap = (props: NodeMap) => {
+	const nearbyNodes = useSelector(
+		props.actor,
+		Daemon.NodeMap.selectNearbyNodes
+	);
 
-	// if (re.loading) {
-	// 	return <div>loading</div>;
-	// }
-
-	// if (re.error || !re.data) {
-	// 	return <div>error</div>;
-	// }
-
-	// const nodes = re.data.findNearbyNodes;
+	if (!nearbyNodes) {
+		return null;
+	}
 
 	return (
 		<div>

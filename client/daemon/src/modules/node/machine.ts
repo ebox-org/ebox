@@ -1,4 +1,4 @@
-import { ActorRefFrom, assign, createMachine, spawn } from "xstate";
+import { ActorRefFrom, assign, createMachine, send, spawn } from "xstate";
 import { DaemonContainer } from "../../container";
 import * as Ports from "../../ports";
 import { faker } from "@faker-js/faker";
@@ -9,27 +9,61 @@ import {
 	RegisterMutationVariables,
 	RegisterMutation,
 } from "./operations.generated";
-import { createLocationMachine, LocationMachine } from "../location";
-import { createMessageMachine, MessageMachine } from "../message";
+import { LocationMachine, LocationModule } from "../location";
+import { MessageMachine } from "../message";
+import { interfaces } from "inversify";
+import { MessageModule } from "../message";
+import { SendMachine, SendMessageModule } from "../send-message";
+import { type } from "os";
+import { SetNodeIDEvent } from "../../internals/common-event";
 
 export interface NodeMachineCtx {
 	nodeID?: string;
-	locationRef?: ActorRefFrom<LocationMachine>;
-	messageRef?: ActorRefFrom<MessageMachine>;
+	locationRef: ActorRefFrom<LocationMachine>;
+	messageRef: ActorRefFrom<MessageMachine>;
+	sendRef: ActorRefFrom<SendMachine>;
 }
 
-export const createNodeMachine = (container: DaemonContainer) => {
-	const logger = container.get(Ports.LoggerFactory).createLogger("node");
+export type ResetNode = {
+	type: "RESET_NODE";
+};
 
-	const kvStorage = container.get(Ports.KVStorage);
+export type NodeMachineEvent = ResetNode;
 
-	const Api = container.get(Ports.Api);
+const Key = "node-id";
 
-	return createMachine<NodeMachineCtx>(
+const MessageMachineID = "message";
+const SendMachineID = "send";
+
+export const createNodeMachine = (ctx: interfaces.Context) => () => {
+	const container = ctx.container;
+
+	const logger = ctx.container
+		.get<Ports.LoggerFactory>(Ports.LoggerFactory)
+		.createLogger("node");
+
+	const kvStorage = ctx.container.get<Ports.KVStorage>(Ports.KVStorage);
+
+	const Api = ctx.container.get<Ports.Api>(Ports.Api);
+
+	return createMachine<NodeMachineCtx, NodeMachineEvent>(
 		{
 			id: "node",
 			initial: "inactive",
-			context: {},
+			context: {
+				nodeID: undefined,
+				locationRef: spawn(
+					container.get<LocationModule>(LocationModule).createMachine()
+				),
+				messageRef: spawn(
+					container.get<MessageModule>(MessageModule).createMachine(),
+					MessageMachineID
+				),
+				sendRef: spawn(
+					container.get<SendMessageModule>(SendMessageModule).createMachine(),
+					SendMachineID
+				),
+			},
 			states: {
 				inactive: {
 					always: {
@@ -40,7 +74,12 @@ export const createNodeMachine = (container: DaemonContainer) => {
 					invoke: {
 						src: "register",
 						onDone: {
-							actions: "setNodeID",
+							actions: [
+								"setNodeID",
+								"sendNodeIDToMessageMachine",
+								"sendNodeIDToSendMachine",
+								"sendNodeIDToLocationMachine",
+							],
 							target: "registered",
 						},
 						onError: "registerFailed",
@@ -48,6 +87,24 @@ export const createNodeMachine = (container: DaemonContainer) => {
 				},
 				registered: {
 					entry: ["spawnLocation", "spawnMessageMachine"],
+					on: {
+						RESET_NODE: "resetting",
+					},
+				},
+				resetting: {
+					entry: [
+						(ctx) => {
+							ctx.locationRef?.stop?.();
+							ctx.messageRef?.stop?.();
+						},
+					],
+					invoke: {
+						src: "resetNode",
+						onDone: {
+							target: "inactive",
+						},
+						onError: "inactive",
+					},
 				},
 				registerFailed: {
 					after: {
@@ -63,29 +120,45 @@ export const createNodeMachine = (container: DaemonContainer) => {
 						nodeID: event.data,
 					};
 				}),
-				spawnLocation: assign((ctx, event) => {
-					const locationRef = spawn(
-						createLocationMachine(container, ctx.nodeID!)
-					);
-
-					return {
-						locationRef,
-					};
-				}),
-				spawnMessageMachine: assign<NodeMachineCtx>((ctx, event) => {
-					return {
-						messageRef: spawn(
-							createMessageMachine(container, ctx.nodeID!),
-							"message"
-						),
-					};
-				}),
+				sendNodeIDToMessageMachine: send(
+					(ctx, event: any) => {
+						return {
+							type: "SET_NODE_ID",
+							nodeID: event.data,
+						} as SetNodeIDEvent;
+					},
+					{
+						to: (ctx) => ctx.messageRef,
+					}
+				),
+				sendNodeIDToSendMachine: send(
+					(ctx, event: any) => {
+						return {
+							type: "SET_NODE_ID",
+							nodeID: event.data,
+						} as SetNodeIDEvent;
+					},
+					{
+						to: (ctx) => ctx.sendRef,
+					}
+				),
+				sendNodeIDToLocationMachine: send(
+					(ctx, event: any) => {
+						return {
+							type: "SET_NODE_ID",
+							nodeID: event.data,
+						} as SetNodeIDEvent;
+					},
+					{
+						to: (ctx) => ctx.locationRef,
+					}
+				),
 			},
 			services: {
-				register: async (ctx, event) => {
-					logger.debug("registering node");
+				register: async (ctx, _event) => {
+					const event = _event;
 
-					const Key = "node-id";
+					logger.debug("registering node");
 
 					const kv = await kvStorage.open("modules.node");
 
@@ -115,9 +188,21 @@ export const createNodeMachine = (container: DaemonContainer) => {
 
 					return nodeID;
 				},
+				resetNode: async (ctx, event) => {
+					logger.debug("resetting node");
+
+					const kv = await kvStorage.open("modules.node");
+
+					await kv.remove(Key);
+
+					logger.info("node reset");
+				},
 			},
 		}
 	);
 };
 
-export type NodeMachine = ReturnType<typeof createNodeMachine>;
+export type NodeMachineFactory = ReturnType<typeof createNodeMachine>;
+export const NodeMachineFactory = Symbol("NodeMachineFactory");
+
+export type NodeMachine = ReturnType<NodeMachineFactory>;

@@ -1,4 +1,4 @@
-import { Container as _Container } from "inversify";
+import { Container as _Container, inject as _inject } from "inversify";
 
 export { injectable } from "inversify";
 
@@ -25,3 +25,6 @@ export class DaemonContainer {
 		return this._container.get<T>(token.identifier as symbol);
 	}
 }
+
+export const inject = <T>(token: Token<T>) =>
+	_inject<T>(token.identifier as symbol);

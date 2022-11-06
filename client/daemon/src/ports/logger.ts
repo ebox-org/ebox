@@ -1,5 +1,3 @@
-import { Token } from "../container";
-
 export interface Logger {
 	debug(...messages: any[]): this;
 	info: (...messages: any[]) => this;
@@ -8,7 +6,7 @@ export interface Logger {
 }
 
 export interface LoggerFactory {
-	createLogger: (name: string) => Logger;
+	createLogger: (...tags: string[]) => Logger;
 }
 
-export const LoggerFactory = Token.create<LoggerFactory>("LoggerFactory");
+export const LoggerFactory = Symbol("LoggerFactory");

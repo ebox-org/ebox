@@ -1,5 +1,6 @@
+import { interfaces } from "inversify";
 import { over } from "ok-value-error-reason";
-import { assign, createMachine } from "xstate";
+import { ActorRefFrom, assign, createMachine } from "xstate";
 import { DaemonContainer } from "../../container";
 import * as Ports from "../../ports";
 import {
@@ -7,29 +8,46 @@ import {
 	FindNearByNodesQueryVariables,
 	FindNearByNodesQuery,
 } from "./operations.generated";
+import { SetNodeIDEvent } from "../../internals/common-event";
 
-interface NearbyNode {
+export interface NearbyNode {
 	id: string;
 	distance: number;
 }
 
 export interface NodeMapMachineCtx {
 	nearbyNodes: NearbyNode[];
+	currentNodeID?: string;
 }
 
-export const createNodeMapMachine = (container: DaemonContainer) => {
-	const logger = container.get(Ports.LoggerFactory).createLogger("NodeMap");
 
-	const geo = container.get(Ports.GeoLocation);
+export type NodeMapMachineEvents = SetNodeIDEvent;
 
-	const Api = container.get(Ports.Api);
+export const createNodeMapMachine = (ctx: interfaces.Context) => () => {
+	const container = ctx.container;
+	const logger = container
+		.get<Ports.LoggerFactory>(Ports.LoggerFactory)
+		.createLogger("NodeMap");
 
-	return createMachine<NodeMapMachineCtx>(
+	const geo = container.get<Ports.GeoLocation>(Ports.GeoLocation);
+
+	const Api = container.get<Ports.Api>(Ports.Api);
+
+	return createMachine<NodeMapMachineCtx, NodeMapMachineEvents>(
 		{
 			id: "NodeMap",
 			initial: "idle",
 			context: {
 				nearbyNodes: [],
+			},
+			on: {
+				SET_NODE_ID: {
+					actions: assign((ctx, event) => {
+						return {
+							currentNodeID: event.nodeID,
+						};
+					}),
+				},
 			},
 			states: {
 				idle: {
@@ -108,4 +126,10 @@ export const createNodeMapMachine = (container: DaemonContainer) => {
 	);
 };
 
-export type NodeMapMachine = ReturnType<typeof createNodeMapMachine>;
+export type NodeMapMachineFactory = ReturnType<typeof createNodeMapMachine>;
+
+export const NodeMapMachineFactory = Symbol("NodeMapMachineFactory");
+
+export type NodeMapMachine = ReturnType<NodeMapMachineFactory>;
+
+export type NodeMapActorRef = ActorRefFrom<NodeMapMachine>;

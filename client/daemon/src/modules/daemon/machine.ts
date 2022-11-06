@@ -1,30 +1,27 @@
-import {
-	ActorRef,
-	assign,
-	createMachine,
-	spawn,
-	Actor,
-	ActorRefFrom,
-} from "xstate";
-import { DaemonContainer } from "../../container";
-import * as Ports from "../../ports";
-import { createMessageMachine, MessageMachine } from "../message";
-import { createNodeMachine, NodeMachine } from "../node";
-import { createNodeMapMachine, NodeMapMachine } from "../node-map/machine";
+import { interfaces } from "inversify";
+import { ActorRefFrom, assign, createMachine, spawn } from "xstate";
 
-export interface RootMachineCtx {
+import * as Ports from "../../ports";
+import { NodeMachine, NodeModule } from "../node";
+import { NodeMapMachine, NodeMapModule } from "../node-map";
+import { UploadMachine } from "../upload";
+
+export interface DaemonMachineCtx {
 	nodeRef?: ActorRefFrom<NodeMachine>;
 	nodeMapRef?: ActorRefFrom<NodeMapMachine>;
+	uploadRef?: ActorRefFrom<UploadMachine>;
 }
 
-export const createRootMachine = (container: DaemonContainer) => {
-	const logger = container.get(Ports.LoggerFactory).createLogger("daemon");
+export const createDaemonMachine = (ctx: interfaces.Context) => () => {
+	const logger = ctx.container
+		.get<Ports.LoggerFactory>(Ports.LoggerFactory)
+		.createLogger("daemon");
 
-	return createMachine<RootMachineCtx>(
+	return createMachine<DaemonMachineCtx>(
 		{
-			id: "root",
+			id: "daemon",
 			initial: "initial",
-			context: {},
+			context: {} as DaemonMachineCtx,
 			states: {
 				initial: {
 					always: {
@@ -75,21 +72,26 @@ export const createRootMachine = (container: DaemonContainer) => {
 		},
 		{
 			actions: {
-				spawnNodeMachine: assign<RootMachineCtx>(() => {
+				spawnNodeMachine: assign<DaemonMachineCtx>(() => {
 					return {
-						nodeRef: spawn(createNodeMachine(container), "node"),
+						nodeRef: spawn(
+							ctx.container.get<NodeModule>(NodeModule).createMachine(),
+							"node"
+						),
 					};
 				}),
-				spawnNodeMapMachine: assign<RootMachineCtx>(() => {
+				spawnNodeMapMachine: assign<DaemonMachineCtx>(() => {
 					return {
-						nodeMapRef: spawn(createNodeMapMachine(container), "nodeMap"),
+						nodeMapRef: spawn(
+							ctx.container.get<NodeMapModule>(NodeMapModule).createMachine(),
+							"nodeMap"
+						),
 					};
 				}),
 			},
 			services: {
 				validateAdapters: async (ctx, event) => {
 					//
-
 					logger.info("Validated adapters");
 				},
 				initialize: async (ctx, event) => {
@@ -99,7 +101,6 @@ export const createRootMachine = (container: DaemonContainer) => {
 				},
 				disposeAdapter: async (ctx, event) => {
 					//
-
 					logger.info("Disposed adapter");
 				},
 			},
@@ -107,4 +108,9 @@ export const createRootMachine = (container: DaemonContainer) => {
 	);
 };
 
-export type RootMachine = ActorRefFrom<typeof createRootMachine>;
+export type DaemonMachineFactory = ReturnType<typeof createDaemonMachine>;
+export const DaemonMachineFactory = Symbol("DaemonMachineFactory");
+
+export type DaemonMachine = ReturnType<DaemonMachineFactory>;
+
+export type DaemonMachineRef = ActorRefFrom<DaemonMachine>;

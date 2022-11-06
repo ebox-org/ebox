@@ -1,5 +1,3 @@
-import { Token } from "../container";
-
 export interface Coordinates {
 	latitude: number;
 	longitude: number;
@@ -11,4 +9,4 @@ export interface GeoLocation {
 	getCurrentPosition(): Promise<Coordinates>;
 }
 
-export const GeoLocation = Token.create<GeoLocation>("GeoLocation");
+export const GeoLocation = Symbol("GeoLocation");

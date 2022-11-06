@@ -1,4 +1,4 @@
-import { Ports, injectable } from "@ebox/daemon";
+import { Ports } from "@ebox/daemon";
 import { WebAppContainer } from "../container";
 import {
 	ApolloClient,

@@ -1,14 +1,16 @@
 {
 	"name": "daemon",
 	"version": "1.0.0",
-	"main": "dist/src/index.js",
+	"main": "dist/cjs/index.js",
+	"module": "dist/esm/index.js",
 	"license": "MIT",
 	"packageManager": "yarn@3.2.4",
 	"type": "module",
 	"scripts": {
 		"format": "rome format .",
 		"ci": "rome ci",
-		"build": "tsc",
+		"build": "rollup -c ./misc/rollup.config.ts --configPlugin typescript",
+		"dev": "rollup -w -c ./misc/rollup.config.ts --configPlugin typescript",
 		"generate": "graphql-codegen --config codegen.yml"
 	},
 	"devDependencies": {
@@ -18,11 +20,15 @@
 		"@graphql-codegen/typescript": "2.7.3",
 		"@graphql-codegen/typescript-operations": "2.5.3",
 		"@graphql-codegen/typescript-react-apollo": "3.3.3",
+		"@rollup/plugin-commonjs": "^23.0.2",
+		"@rollup/plugin-typescript": "^9.0.2",
 		"@types/node": "^18.7.23",
 		"@types/react": "^18.0.21",
 		"@types/react-dom": "^18.0.6",
 		"@vitejs/plugin-react": "^2.1.0",
 		"graphql": "^16.6.0",
+		"rollup": "^3.2.5",
+		"rollup-plugin-typescript2": "^0.34.1",
 		"rome": "next",
 		"typescript": "^4.8.4",
 		"vite": "^3.1.4"
@@ -43,7 +49,7 @@
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
 		"reflect-metadata": "^0.1.13",
-		"tsyringe": "^4.7.0",
+		"tree-model": "^1.0.7",
 		"xstate": "^4.33.6",
 		"zustand": "^4.1.1"
 	}

@@ -1,0 +1,8 @@
+{
+	"extends": "./tsconfig.share.json",
+	"compilerOptions": {
+		"module": "ES2020",
+		"outDir": "../dist/cjs"
+	},
+	"include": ["../src/**/*"]
+}
