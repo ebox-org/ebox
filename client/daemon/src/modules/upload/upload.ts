@@ -1,16 +1,12 @@
-import { ActorRefFrom, assign, createMachine, spawn } from "xstate";
+import { ActorRefFrom, assign, createMachine, interpret, spawn } from "xstate";
+import { waitFor } from "xstate/lib/waitFor";
 import { DaemonContainer } from "../../container";
 import { faker } from "@faker-js/faker";
 
 // import { createMessageMachine, MessageMachine } from "../message";
 import { inject, injectable } from "inversify";
 import { Module } from "../../internals/decorators";
-import { createUploadMachine } from "./machine";
-
-export type UploadMachineFactory = ReturnType<typeof createUploadMachine>;
-export const UploadMachineFactory = Symbol("UploadMachineFactory");
-
-export type UploadMachine = ReturnType<UploadMachineFactory>;
+import { createUploadMachine, UploadMachineFactory } from "./machine";
 
 @injectable()
 @Module({
@@ -18,10 +14,11 @@ export type UploadMachine = ReturnType<UploadMachineFactory>;
 		container
 			.bind<UploadMachineFactory>(UploadMachineFactory)
 			.toFactory(createUploadMachine);
-		container.bind(LocationModule).toSelf();
+
+		container.bind(UploadModule).toSelf();
 	},
 })
-export class LocationModule {
+export class UploadModule {
 	constructor(
 		@inject(UploadMachineFactory)
 		private uploadMachineFactory: UploadMachineFactory
@@ -29,5 +26,18 @@ export class LocationModule {
 
 	public createMachine(file: File) {
 		return this.uploadMachineFactory(file);
+	}
+
+	async uploadFile(file: File) {
+		const machine = this.createMachine(file);
+		const service = interpret(machine).start();
+
+		const state = await waitFor(service, (s) => !!s.done);
+
+		if (state.value === "uploaded") {
+			return state.context.fid!;
+		}
+
+		throw state.context.error;
 	}
 }

@@ -1,1 +1,2 @@
-export * from './machine';
+export { UploadModule } from "./upload";
+export * from "./interface";

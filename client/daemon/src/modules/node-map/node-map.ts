@@ -29,20 +29,13 @@ export class NodeMapModule {
 	 */
 	constructor(
 		@inject(NodeMapMachineFactory)
-		private readonly machineFactory: NodeMapMachineFactory,
+		public readonly createMachine: NodeMapMachineFactory,
 
 		@inject(Context)
 		private readonly context: Context
 	) {}
 
-	public createMachine() {
-		return this.machineFactory();
-	}
+	selectNodeMap = selectNodeMap;
 
 	selectNearbyNodes = selectNearbyNodes;
-
-	readonly Selectors = {
-		selectNodeMap,
-		selectNearbyNodes,
-	};
 }

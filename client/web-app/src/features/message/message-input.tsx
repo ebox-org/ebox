@@ -1,8 +1,4 @@
-import * as React from "react";
-import { useActor, useSelector } from "@xstate/react";
-import { Daemon } from "../../state-machine";
-import { ActorRef, ActorRefFrom } from "xstate";
-// import { interfaces } from "@ebox/daemon";
+import { interfaces } from "@ebox/daemon";
 import {
 	FormControl,
 	FormControlLabel,
@@ -10,7 +6,11 @@ import {
 	Radio,
 	RadioGroup,
 } from "@mui/material";
-import { interfaces } from "@ebox/daemon";
+import * as React from "react";
+import { Daemon } from "../../state-machine";
+import { ActorRefFrom } from "xstate";
+
+// import { interfaces } from "@ebox/daemon";
 // import {RadioGroup} from '@mui/base'
 
 export interface MessageInput {
@@ -36,15 +36,15 @@ export const MessageInput = (props: MessageInput) => {
 			});
 			textRef.current!.value = "";
 		} else if (cType === "file") {
-			// const file = fileRef.current!.files![0];
-			// const fid = await Daemon.upload(file);
-			// fileRef.current!.value = "";
-			// sendRef.send({
-			// 	type: "SEND",
-			// 	toID: toRef.current!.value,
-			// 	msgType: "file",
-			// 	content: fid,
-			// });
+			const file = fileRef.current!.files![0];
+			const fid = await Daemon.Upload.uploadFile(file);
+			fileRef.current!.value = "";
+			sendRef.send({
+				type: "SEND",
+				toID: toRef.current!.value,
+				msgType: "file",
+				content: fid,
+			});
 		}
 	};
 

@@ -14,14 +14,8 @@ import { Module } from "../../internals/decorators";
 import { NodeModule } from "../node";
 import { NodeMapModule } from "../node-map";
 import { createNodeMapMachine } from "../node-map/machine";
-import { createDaemonMachine } from "./machine";
-
-export type DaemonMachineFactory = ReturnType<typeof createDaemonMachine>;
-export const DaemonMachineFactory = Symbol("DaemonMachineFactory");
-
-export type DaemonMachine = ReturnType<DaemonMachineFactory>;
-
-export type DaemonMachineRef = ActorRefFrom<DaemonMachine>;
+import { UploadModule } from "../upload";
+import { createDaemonMachine, DaemonMachineFactory } from "./machine";
 
 @injectable()
 @Module({
@@ -38,9 +32,18 @@ export class DaemonModule {
 
 	constructor(
 		@inject<DaemonMachineFactory>(DaemonMachineFactory)
-		private daemonMachineFactory: DaemonMachineFactory
+		private createMachine: DaemonMachineFactory,
+
+		@inject(NodeModule)
+		public readonly NodeModule: NodeModule,
+
+		@inject(NodeMapModule)
+		public readonly NodeMap: NodeMapModule,
+
+		@inject(UploadModule)
+		public readonly Upload: UploadModule
 	) {
-		this.RootActor = interpret(this.daemonMachineFactory(), {
+		this.RootActor = interpret(this.createMachine(), {
 			devTools: true,
 		}).start();
 	}
@@ -48,10 +51,4 @@ export class DaemonModule {
 	stop() {
 		this.RootActor.stop();
 	}
-
-	@inject(NodeModule)
-	public readonly NodeModule!: NodeModule;
-
-	@inject(NodeMapModule)
-	public readonly NodeMap!: NodeMapModule;
 }

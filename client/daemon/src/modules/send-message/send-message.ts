@@ -13,10 +13,8 @@ import { createSendMachine, SendMachine, SendMachineFactory } from "./machine";
 	},
 })
 export class SendMessageModule {
-	@inject(SendMachineFactory)
-	private createSendMachine!: SendMachineFactory;
-
-	createMachine() {
-		return this.createSendMachine();
-	}
+	constructor(
+		@inject(SendMachineFactory)
+		public readonly createMachine: SendMachineFactory
+	) {}
 }

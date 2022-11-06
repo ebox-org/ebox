@@ -65,6 +65,8 @@ export const createUploadMachine =
 				},
 				services: {
 					upload: async (ctx, event) => {
+						logger.debug("uploading file");
+
 						const upload = container.get<Ports.Upload>(Ports.Upload);
 
 						const fid = await upload.upload(ctx.file);
@@ -78,4 +80,7 @@ export const createUploadMachine =
 		);
 	};
 
-export type UploadMachine = ReturnType<typeof createUploadMachine>;
+export type UploadMachineFactory = ReturnType<typeof createUploadMachine>;
+export const UploadMachineFactory = Symbol("UploadMachineFactory");
+
+export type UploadMachine = ReturnType<UploadMachineFactory>;

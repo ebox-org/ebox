@@ -9,6 +9,7 @@ import { sendParent } from "xstate/lib/actions";
 import { interfaces } from "inversify";
 import { SendMachine, SendMessageModule } from "../send-message";
 import { SetNodeIDEvent } from "../../internals/common-event";
+export { SetNodeIDEvent } from "../../internals/common-event";
 
 export interface Message {
 	fromID: string;

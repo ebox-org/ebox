@@ -1,12 +1,15 @@
 import { interfaces } from "inversify";
-import { createMachine, ActorRefFrom, assign, spawn } from "xstate";
+import { ActorRefFrom, assign, createMachine, spawn } from "xstate";
+
 import * as Ports from "../../ports";
-import { NodeModule, NodeMachineFactory } from "../node";
+import { NodeMachine, NodeModule } from "../node";
 import { NodeMapMachine, NodeMapModule } from "../node-map";
+import { UploadMachine } from "../upload";
 
 export interface DaemonMachineCtx {
-	nodeRef?: ActorRefFrom<NodeMachineFactory>;
+	nodeRef?: ActorRefFrom<NodeMachine>;
 	nodeMapRef?: ActorRefFrom<NodeMapMachine>;
+	uploadRef?: ActorRefFrom<UploadMachine>;
 }
 
 export const createDaemonMachine = (ctx: interfaces.Context) => () => {
@@ -104,3 +107,10 @@ export const createDaemonMachine = (ctx: interfaces.Context) => () => {
 		}
 	);
 };
+
+export type DaemonMachineFactory = ReturnType<typeof createDaemonMachine>;
+export const DaemonMachineFactory = Symbol("DaemonMachineFactory");
+
+export type DaemonMachine = ReturnType<DaemonMachineFactory>;
+
+export type DaemonMachineRef = ActorRefFrom<DaemonMachine>;

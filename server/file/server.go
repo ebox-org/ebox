@@ -45,12 +45,20 @@ func setupRouter() *gin.Engine {
 
 	r.POST("upload", func(c *gin.Context) {
 
-		res, _ := http.Get(seaweedMaster + "/dir/assign")
+		dirUrl := seaweedMaster + "/dir/assign"
+
+		log.Println("obtaining file id from ", dirUrl)
+
+		res, _ := http.Get(dirUrl)
+
+		log.Println("response Status:", res.Status)
 
 		body, _ := ioutil.ReadAll(res.Body)
 
 		fInfo := &FInfo{}
 		json.Unmarshal(body, fInfo)
+
+		log.Println("file id is ", fInfo.FID)
 
 		c.Request.ParseMultipartForm(30 * 1024 * 1024)
 
@@ -66,7 +74,11 @@ func setupRouter() *gin.Engine {
 
 		bw.Close()
 
+		log.Println("uploading fid ", fInfo.FID)
+
 		http.Post(seaweedVolume+"/"+fInfo.FID, bw.FormDataContentType(), buf)
+
+		log.Println("uploaded fid ", fInfo.FID)
 
 		c.JSON(http.StatusOK, gin.H{
 			"fid": fInfo.FID,

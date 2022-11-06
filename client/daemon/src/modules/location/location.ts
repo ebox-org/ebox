@@ -24,12 +24,6 @@ export type LocationMachine = ReturnType<LocationMachineFactory>;
 export class LocationModule {
 	constructor(
 		@inject(LocationMachineFactory)
-		private locationMachineFactory: LocationMachineFactory
+		public readonly createMachine: LocationMachineFactory
 	) {}
-
-	public createMachine() {
-		return this.locationMachineFactory();
-	}
-
-	off() {}
 }

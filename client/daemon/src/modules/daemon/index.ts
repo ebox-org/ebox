@@ -1,1 +1,2 @@
-export * from './daemon';
+export { DaemonModule } from "./daemon";
+export * from "./interface";

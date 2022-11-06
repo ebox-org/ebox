@@ -9,6 +9,7 @@ import { getModuleMetadata } from "./internals/decorators";
 import { LocationModule } from "./modules/location";
 import { MessageModule } from "./modules/message";
 import { ContextModule } from "./internals/context-module";
+import { UploadModule } from "./modules/upload/upload";
 
 export class Boostrapper {
 	readonly container;
@@ -25,6 +26,7 @@ export class Boostrapper {
 		LocationModule,
 		MessageModule,
 		SendMessageModule,
+		UploadModule,
 	];
 
 	private bindAll() {
