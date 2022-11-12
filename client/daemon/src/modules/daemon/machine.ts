@@ -1,29 +1,53 @@
 import { interfaces } from "inversify";
-import { ActorRefFrom, assign, createMachine, spawn } from "xstate";
+import {
+	ActorRefFrom,
+	AnyEventObject,
+	assign,
+	createMachine,
+	spawn,
+} from "xstate";
 
+import {
+	ActorCenterMachine,
+	ActorCenterModule,
+} from "../../internals/actor-center";
 import * as Ports from "../../ports";
 import { NodeMachine, NodeModule } from "../node";
 import { NodeMapMachine, NodeMapModule } from "../node-map";
-import { UploadMachine } from "../upload";
 
 export interface DaemonMachineCtx {
+	actorCenterRef?: ActorRefFrom<ActorCenterMachine>;
 	nodeRef?: ActorRefFrom<NodeMachine>;
 	nodeMapRef?: ActorRefFrom<NodeMapMachine>;
-	uploadRef?: ActorRefFrom<UploadMachine>;
 }
+
+export type DaemonMachineEvent = AnyEventObject;
+
+export type DaemonMachineState =
+	| {
+			value: "initial";
+			context: DaemonMachineCtx;
+	  }
+	| {
+			value: "running";
+			context: DaemonMachineCtx;
+	  };
 
 export const createDaemonMachine = (ctx: interfaces.Context) => () => {
 	const logger = ctx.container
 		.get<Ports.LoggerFactory>(Ports.LoggerFactory)
 		.createLogger("daemon");
 
-	return createMachine<DaemonMachineCtx>(
+	const actorCenter = ctx.container.get<ActorCenterModule>(ActorCenterModule);
+
+	return createMachine<DaemonMachineCtx, AnyEventObject, DaemonMachineState>(
 		{
 			id: "daemon",
 			initial: "initial",
-			context: {} as DaemonMachineCtx,
+			context: {},
 			states: {
 				initial: {
+					entry: ["spawnActorCenter"],
 					always: {
 						target: "validatingAdapters",
 					},
@@ -36,11 +60,7 @@ export const createDaemonMachine = (ctx: interfaces.Context) => () => {
 					},
 				},
 				initializing: {
-					entry: [
-						"spawnNodeMachine",
-						"spawnNodeMapMachine",
-						"spawnMessageMachine",
-					],
+					entry: ["spawnNodeMachine", "spawnNodeMapMachine"],
 					invoke: {
 						src: "initialize",
 						onDone: "running",
@@ -72,7 +92,19 @@ export const createDaemonMachine = (ctx: interfaces.Context) => () => {
 		},
 		{
 			actions: {
+				spawnActorCenter: assign<DaemonMachineCtx>(() => {
+					logger.debug("spawning actor center");
+
+					const ref = spawn(actorCenter.createMachine(), "actor-center");
+
+					actorCenter.setRef(ref);
+
+					return {
+						actorCenterRef: ref,
+					};
+				}),
 				spawnNodeMachine: assign<DaemonMachineCtx>(() => {
+					logger.debug("spawning node machine");
 					return {
 						nodeRef: spawn(
 							ctx.container.get<NodeModule>(NodeModule).createMachine(),
@@ -112,5 +144,3 @@ export type DaemonMachineFactory = ReturnType<typeof createDaemonMachine>;
 export const DaemonMachineFactory = Symbol("DaemonMachineFactory");
 
 export type DaemonMachine = ReturnType<DaemonMachineFactory>;
-
-export type DaemonMachineRef = ActorRefFrom<DaemonMachine>;

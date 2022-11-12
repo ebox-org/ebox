@@ -1,10 +1,10 @@
 import { Container, inject, injectable } from "inversify";
 
-import { Module } from "../../internals/decorators";
+import { ebModule } from "../../internals/decorators";
 import { createSendMachine, SendMachine, SendMachineFactory } from "./machine";
 
 @injectable()
-@Module({
+@ebModule({
 	setup(container: Container) {
 		container
 			.bind<SendMachine>(SendMachineFactory)

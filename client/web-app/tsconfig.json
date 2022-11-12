@@ -19,9 +19,10 @@
 		"jsx": "react-jsx",
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true,
-		"baseUrl": ".",
+		"baseUrl": "./src",
 		"paths": {
-			"@ebox/daemon": ["../daemon/src"]
+			"@ebox/daemon": ["../../daemon/src"],
+			"@src/*": ["*"]
 		}
 	},
 	"include": ["src"],

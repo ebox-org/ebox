@@ -1,2 +1,4 @@
-export * from "./interface";
-export { SendMessageModule } from "./send-message";
+import { SendMessageModule as Module } from "./send-message";
+import type * as Interface from "./interface";
+
+export { Module, Interface };

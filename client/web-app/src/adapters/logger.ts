@@ -1,10 +1,12 @@
 import { WebAppContainer } from "../container";
 import { Ports } from "@ebox/daemon";
 import { injectable } from "inversify";
+import { pascalCase } from "change-case";
 
 class LoggerImpl implements Ports.Logger {
 	private prefix;
 	constructor(...tags: string[]) {
+		tags = tags.map((t) => pascalCase(t));
 		this.prefix = `[${tags.join("|")}]`;
 	}
 

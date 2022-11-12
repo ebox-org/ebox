@@ -1,16 +1,44 @@
 import { inject, injectable, interfaces } from "inversify";
 import { createMachine, sendParent } from "xstate";
-import { Module } from "../../internals/decorators";
+
+import { ebModule } from "../../internals/decorators";
 
 import * as Ports from "../../ports";
-import { createMessageMachine, MessageMachineFactory } from "./machine";
+import { createMessageRootMachine, MessageRootMachineFactory } from "./machine";
+import {
+	createMessageListMachine,
+	MessageListMachineFactory,
+} from "./machine-list";
+import {
+	createMessageLoaderMachine,
+	MessageLoaderMachineFactory,
+} from "./machine-loader";
+import {
+	createMessageWriterMachine,
+	MessageWriterMachineFactory,
+} from "./machine-writer";
 
 import * as Op from "./operations.generated";
 
 @injectable()
-@Module({
+@ebModule({
 	setup: (container) => {
-		container.bind(MessageMachineFactory).toFactory(createMessageMachine);
+		container
+			.bind(MessageLoaderMachineFactory)
+			.toFactory(createMessageLoaderMachine);
+
+		container
+			.bind(MessageWriterMachineFactory)
+			.toFactory(createMessageWriterMachine);
+
+		container
+			.bind(MessageListMachineFactory)
+			.toFactory(createMessageListMachine);
+
+		container
+			.bind(MessageRootMachineFactory)
+			.toFactory(createMessageRootMachine);
+
 		container.bind(MessageModule).toSelf();
 	},
 })
@@ -21,13 +49,9 @@ export class MessageModule {
 		@inject(Ports.LoggerFactory)
 		private loggerFactory: Ports.LoggerFactory,
 
-		@inject(MessageMachineFactory)
-		private machineFactory: MessageMachineFactory
+		@inject(MessageRootMachineFactory)
+		public readonly createMachine: MessageRootMachineFactory
 	) {
 		this.logger = this.loggerFactory.createLogger("Message");
-	}
-
-	createMachine() {
-		return this.machineFactory();
 	}
 }

@@ -1,5 +1,4 @@
 import { ActorRefFrom, assign, createMachine, send, spawn } from "xstate";
-import { DaemonContainer } from "../../container";
 import * as Ports from "../../ports";
 import { faker } from "@faker-js/faker";
 
@@ -10,18 +9,18 @@ import {
 	RegisterMutation,
 } from "./operations.generated";
 import { LocationMachine, LocationModule } from "../location";
-import { MessageMachine } from "../message";
+import { MessageMachine, MessageModule } from "../message";
 import { interfaces } from "inversify";
-import { MessageModule } from "../message";
-import { SendMachine, SendMessageModule } from "../send-message";
+import * as SendMessage from "../send-message";
 import { type } from "os";
 import { SetNodeIDEvent } from "../../internals/common-event";
+import { ActorCenterModule } from "../../internals/actor-center";
 
 export interface NodeMachineCtx {
 	nodeID?: string;
 	locationRef: ActorRefFrom<LocationMachine>;
-	messageRef: ActorRefFrom<MessageMachine>;
-	sendRef: ActorRefFrom<SendMachine>;
+	messageRef?: ActorRefFrom<MessageMachine>;
+	sendRef: ActorRefFrom<SendMessage.Interface.SendMachine>;
 }
 
 export type ResetNode = {
@@ -29,6 +28,11 @@ export type ResetNode = {
 };
 
 export type NodeMachineEvent = ResetNode;
+
+export type NodeMachineState = {
+	value: "registered";
+	context: NodeMachineCtx;
+};
 
 const Key = "node-id";
 
@@ -46,7 +50,7 @@ export const createNodeMachine = (ctx: interfaces.Context) => () => {
 
 	const Api = ctx.container.get<Ports.Api>(Ports.Api);
 
-	return createMachine<NodeMachineCtx, NodeMachineEvent>(
+	return createMachine<NodeMachineCtx, NodeMachineEvent, NodeMachineState>(
 		{
 			id: "node",
 			initial: "inactive",
@@ -55,12 +59,9 @@ export const createNodeMachine = (ctx: interfaces.Context) => () => {
 				locationRef: spawn(
 					container.get<LocationModule>(LocationModule).createMachine()
 				),
-				messageRef: spawn(
-					container.get<MessageModule>(MessageModule).createMachine(),
-					MessageMachineID
-				),
+				messageRef: undefined,
 				sendRef: spawn(
-					container.get<SendMessageModule>(SendMessageModule).createMachine(),
+					container.get<SendMessage.Module>(SendMessage.Module).createMachine(),
 					SendMachineID
 				),
 			},
@@ -76,7 +77,6 @@ export const createNodeMachine = (ctx: interfaces.Context) => () => {
 						onDone: {
 							actions: [
 								"setNodeID",
-								"sendNodeIDToMessageMachine",
 								"sendNodeIDToSendMachine",
 								"sendNodeIDToLocationMachine",
 							],
@@ -120,17 +120,18 @@ export const createNodeMachine = (ctx: interfaces.Context) => () => {
 						nodeID: event.data,
 					};
 				}),
-				sendNodeIDToMessageMachine: send(
-					(ctx, event: any) => {
-						return {
-							type: "SET_NODE_ID",
-							nodeID: event.data,
-						} as SetNodeIDEvent;
-					},
-					{
-						to: (ctx) => ctx.messageRef,
-					}
-				),
+				spawnMessageMachine: (ctx, _event) => {
+					logger.debug("spawning message machine");
+
+					const machine = container
+						.get<MessageModule>(MessageModule)
+						.createMachine(ctx.nodeID!);
+
+					const actorCenter =
+						container.get<ActorCenterModule>(ActorCenterModule);
+
+					actorCenter.spawnActor(machine, MessageMachineID);
+				},
 				sendNodeIDToSendMachine: send(
 					(ctx, event: any) => {
 						return {

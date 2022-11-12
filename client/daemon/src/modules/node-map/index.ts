@@ -1,2 +1,2 @@
-export * from "./interfaces";
+export * from "./interface";
 export { NodeMapModule } from "./node-map";

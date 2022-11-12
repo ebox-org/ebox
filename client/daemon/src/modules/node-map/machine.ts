@@ -1,7 +1,6 @@
 import { interfaces } from "inversify";
 import { over } from "ok-value-error-reason";
 import { ActorRefFrom, assign, createMachine } from "xstate";
-import { DaemonContainer } from "../../container";
 import * as Ports from "../../ports";
 import {
 	FindNearByNodesDocument,

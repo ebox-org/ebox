@@ -1,5 +1,4 @@
 import { ActorRefFrom, assign, createMachine, spawn } from "xstate";
-import { DaemonContainer } from "../../container";
 import { faker } from "@faker-js/faker";
 
 import {
@@ -13,10 +12,10 @@ import { LocationMachine } from "../location";
 import { inject, injectable } from "inversify";
 import { IModule } from "../../internals/interfaces";
 import { createNodeMachine, NodeMachineFactory } from "./machine";
-import { Module } from "../../internals/decorators";
+import { ebModule } from "../../internals/decorators";
 
 @injectable()
-@Module({
+@ebModule({
 	setup: (container) => {
 		container
 			.bind<NodeMachineFactory>(NodeMachineFactory)
@@ -26,12 +25,9 @@ import { Module } from "../../internals/decorators";
 })
 export class NodeModule {
 	constructor(
-		@inject(NodeMachineFactory) private nodeMachineFactory: NodeMachineFactory
+		@inject(NodeMachineFactory)
+		public readonly createMachine: NodeMachineFactory
 	) {}
-
-	public createMachine() {
-		return this.nodeMachineFactory();
-	}
 
 	off() {}
 }

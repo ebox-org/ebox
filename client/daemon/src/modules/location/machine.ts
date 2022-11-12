@@ -1,5 +1,4 @@
 import { assign, createMachine } from "xstate";
-import { DaemonContainer } from "../../container";
 import * as Ports from "../../ports";
 import { faker } from "@faker-js/faker";
 import { over } from "ok-value-error-reason";

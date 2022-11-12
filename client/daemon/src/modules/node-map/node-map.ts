@@ -1,9 +1,9 @@
 import { inject, injectable } from "inversify";
-import { ActorRefFrom, StateFrom } from "xstate";
+import { StateFrom } from "xstate";
+
 import { Context } from "../../internals/context-module";
-import { Module } from "../../internals/decorators";
-import { IModule } from "../../internals/interfaces";
-import { DaemonMachine, DaemonMachineRef, DaemonModule } from "../daemon";
+import { ebModule } from "../../internals/decorators";
+import { DaemonMachine } from "../daemon/machine";
 import {
 	createNodeMapMachine,
 	NodeMapMachine,
@@ -17,7 +17,7 @@ const selectNearbyNodes = (state: StateFrom<NodeMapMachine>) =>
 	state.context.nearbyNodes;
 
 @injectable()
-@Module({
+@ebModule({
 	setup: (container) => {
 		container.bind(NodeMapMachineFactory).toFactory(createNodeMapMachine);
 		container.bind(NodeMapModule).toSelf();
