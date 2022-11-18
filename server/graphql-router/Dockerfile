@@ -9,7 +9,7 @@ WORKDIR /rover
 RUN unzip bin.zip
 
 # FROM ghcr.io/apollographql/router:v1.2.0 as Final
-FROM ghcr.io/ndthanhdev/apollo-router-arm64:v1.1.0 as Final
+FROM ghcr.io/ndthanhdev/apollo-router-arm64:v1.0.0 as Final
 
 LABEL org.opencontainers.image.source="https://github.com/ebox-org/ebox"
 
