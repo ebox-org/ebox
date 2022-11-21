@@ -1,10 +1,10 @@
 #!/bin/sh
 
-sleep 5s # TODO: remove this when we have a better way to wait for the configmap to be mounted
+sleep 10s # TODO: remove this when we have a better way to wait for the configmap to be mounted
 
 export APOLLO_ELV2_LICENSE=accept
 
-/root/.rover/bin/rover supergraph compose --config /router/config/supergraph-config.yaml > /router/supergraph.graphql
+/root/.rover/bin/rover -l info supergraph compose --config /router/config/supergraph-config.yaml > /router/supergraph.graphql
 
 cat /router/supergraph.graphql
 
