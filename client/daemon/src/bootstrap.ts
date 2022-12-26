@@ -5,11 +5,11 @@ import { ContextModule } from "./internals/context-module";
 import { getModuleMetadata } from "./internals/decorators";
 import { GlobalMQModule } from "./internals/global-mq";
 import { DaemonModule } from "./modules/daemon/module";
-import { LocationModule } from "./modules/location";
-import { MessageModule } from "./modules/message";
-import { NodeModule } from "./modules/node";
-import { NodeMapModule } from "./modules/node-map";
-import * as SendMessage from "./modules/send-message";
+import { LocationModule } from "./modules/location/location";
+import { MessageModule } from "./modules/message/message";
+import { NodeMapModule } from "./modules/node-map/node-map";
+import { NodeModule } from "./modules/node/node";
+import { SendMessageModule } from "./modules/send-message/send-message";
 import { UploadModule } from "./modules/upload/upload";
 
 function addGlobal(planAndResolve: interfaces.Next): interfaces.Next {
@@ -45,7 +45,7 @@ export class Boostrapper {
 		NodeMapModule,
 		LocationModule,
 		MessageModule,
-		SendMessage.Module,
+		SendMessageModule,
 		UploadModule,
 	];
 

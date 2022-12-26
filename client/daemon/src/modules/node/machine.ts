@@ -8,19 +8,21 @@ import {
 	RegisterMutationVariables,
 	RegisterMutation,
 } from "./operations.generated";
-import { LocationMachine, LocationModule } from "../location";
-import { MessageMachine, MessageModule } from "../message";
 import { interfaces } from "inversify";
-import * as SendMessage from "../send-message";
 import { type } from "os";
 import { SetNodeIDEvent } from "../../internals/common-event";
 import { ActorCenterModule } from "../../internals/actor-center";
+import { LocationMachine, LocationModule } from "../location/location";
+import { MessageRootMachine } from "../message/machine";
+import { SendMachine } from "../send-message/machine";
+import { SendMessageModule } from "../send-message/send-message";
+import { MessageModule } from "../message/message";
 
 export interface NodeMachineCtx {
 	nodeID?: string;
 	locationRef: ActorRefFrom<LocationMachine>;
-	messageRef?: ActorRefFrom<MessageMachine>;
-	sendRef: ActorRefFrom<SendMessage.Interface.SendMachine>;
+	messageRef?: ActorRefFrom<MessageRootMachine>;
+	sendRef: ActorRefFrom<SendMachine>;
 }
 
 export type ResetNode = {
@@ -61,7 +63,7 @@ export const createNodeMachine = (ctx: interfaces.Context) => () => {
 				),
 				messageRef: undefined,
 				sendRef: spawn(
-					container.get<SendMessage.Module>(SendMessage.Module).createMachine(),
+					container.get<SendMessageModule>(SendMessageModule).createMachine(),
 					SendMachineID
 				),
 			},

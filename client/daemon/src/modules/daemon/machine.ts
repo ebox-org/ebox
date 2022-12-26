@@ -12,8 +12,10 @@ import {
 	ActorCenterModule,
 } from "../../internals/actor-center";
 import * as Ports from "../../ports";
-import { NodeMachine, NodeModule } from "../node";
-import { NodeMapMachine, NodeMapModule } from "../node-map";
+import { NodeMapMachine } from "../node-map/machine";
+import { NodeMapModule } from "../node-map/node-map";
+import { NodeMachine } from "../node/machine";
+import { NodeModule } from "../node/node";
 
 export interface DaemonMachineCtx {
 	actorCenterRef?: ActorRefFrom<ActorCenterMachine>;
