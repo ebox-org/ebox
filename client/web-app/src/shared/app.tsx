@@ -70,7 +70,7 @@ export function App() {
 type ReadyApp = { children?: React.ReactNode };
 
 function ReadyApp(props: ReadyApp) {
-	const nodeActor = useMatchSelector(Daemon.actor, "running", (s) => {
+	const nodeActor = useMatchSelector(Daemon, "running", (s) => {
 		return s.context.nodeRef!;
 	});
 

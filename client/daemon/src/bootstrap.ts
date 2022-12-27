@@ -1,9 +1,14 @@
 import { Container, interfaces } from "inversify";
+import { interpret } from "xstate";
 
 import { ActorCenterModule } from "./internals/actor-center";
 import { ContextModule } from "./internals/context-module";
 import { getModuleMetadata } from "./internals/decorators";
 import { GlobalMQModule } from "./internals/global-mq";
+import {
+	DaemonMachineFactory,
+	DaemonMachineFactory,
+} from "./modules/daemon/machine";
 import { DaemonModule } from "./modules/daemon/module";
 import { LocationModule } from "./modules/location/location";
 import { MessageModule } from "./modules/message/message";
@@ -61,6 +66,9 @@ export class Boostrapper {
 
 	bootstrap() {
 		this.bindAll();
-		return this.container.resolve(DaemonModule);
+		const machine =
+			this.container.get<DaemonMachineFactory>(DaemonMachineFactory)();
+
+		return interpret(machine).start();
 	}
 }

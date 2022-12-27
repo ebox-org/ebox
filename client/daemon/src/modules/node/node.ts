@@ -1,19 +1,10 @@
-import { ActorRefFrom, assign, createMachine, spawn } from "xstate";
-import { faker } from "@faker-js/faker";
+import { inject, injectable } from 'inversify';
+import { createMachine } from 'xstate';
 
-import {
-	useRegisterMutation,
-	RegisterDocument,
-	RegisterMutationVariables,
-	RegisterMutation,
-} from "./operations.generated";
-import { LocationMachine } from "../location";
+import { ebModule } from '../../internals/decorators';
+import { createNodeMachine, NodeMachineFactory } from './machine';
+
 // import { createMessageMachine, MessageMachine } from "../message";
-import { inject, injectable } from "inversify";
-import { IModule } from "../../internals/interfaces";
-import { createNodeMachine, NodeMachineFactory } from "./machine";
-import { ebModule } from "../../internals/decorators";
-
 @injectable()
 @ebModule({
 	setup: (container) => {

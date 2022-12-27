@@ -3,7 +3,7 @@ import { StateFrom } from "xstate";
 
 import { Context } from "../../internals/context-module";
 import { ebModule } from "../../internals/decorators";
-import { DaemonMachine } from "../daemon/machine";
+import { DaemonMachineFactory } from "../daemon/machine";
 import {
 	createNodeMapMachine,
 	NodeMapMachine,
