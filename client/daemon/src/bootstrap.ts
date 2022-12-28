@@ -1,18 +1,18 @@
-import { Container, interfaces } from 'inversify';
-import { interpret } from 'xstate';
+import { Container, interfaces } from "inversify";
+import { interpret } from "xstate";
 
-import { ActorCenterModule } from './internals/actor-center';
-import { ContextModule } from './internals/context-module';
-import { getModuleMetadata } from './internals/decorators';
-import { GlobalMQModule } from './internals/global-mq';
-import { DaemonMachineFactory } from './modules/daemon/machine';
-import { DaemonModule } from './modules/daemon/module';
-import { LocationModule } from './modules/location/location';
-import { MessageModule } from './modules/message/message';
-import { NodeMapModule } from './modules/node-map/module';
-import { NodeModule } from './modules/node/node';
-import { SendMessageModule } from './modules/send-message/send-message';
-import { UploadModule } from './modules/upload/upload';
+import { ActorCenterModule } from "./internals/actor-center";
+import { ContextModule } from "./internals/context-module";
+import { getModuleMetadata } from "./internals/decorators";
+import { GlobalMQModule } from "./internals/global-mq";
+import { DaemonMachineFactory } from "./modules/daemon/machine";
+import { DaemonModule } from "./modules/daemon/module";
+import { LocationModule } from "./modules/location/module";
+import { MessageModule } from "./modules/message/message";
+import { NodeMapModule } from "./modules/node-map/module";
+import { NodeModule } from "./modules/node/node";
+import { SendMessageModule } from "./modules/send-message/send-message";
+import { UploadModule } from "./modules/upload/upload";
 
 function addGlobal(planAndResolve: interfaces.Next): interfaces.Next {
 	return (args: interfaces.NextArgs) => {
@@ -66,6 +66,8 @@ export class Boostrapper {
 		const machine =
 			this.container.get<DaemonMachineFactory>(DaemonMachineFactory)();
 
-		return interpret(machine).start();
+		return interpret(machine, {
+			devTools: true,
+		}).start();
 	}
 }
