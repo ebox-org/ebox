@@ -19,9 +19,7 @@ function buildOptions(target: Constructor, options?: ModuleOption) {
 	};
 }
 
-
-
-export function Module(options?: ModuleOption) {
+export function ebModule(options?: ModuleOption) {
 	return function <C extends Constructor>(target: C) {
 		const theOptions = buildOptions(target, options);
 

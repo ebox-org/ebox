@@ -1,15 +1,14 @@
 import { ActorRefFrom, assign, createMachine, interpret, spawn } from "xstate";
 import { waitFor } from "xstate/lib/waitFor";
-import { DaemonContainer } from "../../container";
 import { faker } from "@faker-js/faker";
 
 // import { createMessageMachine, MessageMachine } from "../message";
 import { inject, injectable } from "inversify";
-import { Module } from "../../internals/decorators";
+import { ebModule } from "../../internals/decorators";
 import { createUploadMachine, UploadMachineFactory } from "./machine";
 
 @injectable()
-@Module({
+@ebModule({
 	setup: (container) => {
 		container
 			.bind<UploadMachineFactory>(UploadMachineFactory)

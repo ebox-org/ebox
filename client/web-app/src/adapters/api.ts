@@ -6,10 +6,12 @@ import {
 	NormalizedCacheObject,
 } from "@apollo/client";
 
-const API =
-	import.meta.env.PROD || !import.meta.env.VITE_API
-		? "/graphql-router"
-		: `${import.meta.env.VITE_API}/graphql-router`;
+// const API =
+// 	import.meta.env.PROD || !import.meta.env.VITE_API
+// 		? "/graphql-router"
+// 		: `${import.meta.env.VITE_API}/graphql-router`;
+
+const API = "/graphql-router";
 
 const ApiClient = new ApolloClient({
 	uri: API,

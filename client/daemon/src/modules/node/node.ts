@@ -1,22 +1,12 @@
-import { ActorRefFrom, assign, createMachine, spawn } from "xstate";
-import { DaemonContainer } from "../../container";
-import { faker } from "@faker-js/faker";
+import { inject, injectable } from 'inversify';
+import { createMachine } from 'xstate';
 
-import {
-	useRegisterMutation,
-	RegisterDocument,
-	RegisterMutationVariables,
-	RegisterMutation,
-} from "./operations.generated";
-import { LocationMachine } from "../location";
+import { ebModule } from '../../internals/decorators';
+import { createNodeMachine, NodeMachineFactory } from './machine';
+
 // import { createMessageMachine, MessageMachine } from "../message";
-import { inject, injectable } from "inversify";
-import { IModule } from "../../internals/interfaces";
-import { createNodeMachine, NodeMachineFactory } from "./machine";
-import { Module } from "../../internals/decorators";
-
 @injectable()
-@Module({
+@ebModule({
 	setup: (container) => {
 		container
 			.bind<NodeMachineFactory>(NodeMachineFactory)
@@ -26,12 +16,9 @@ import { Module } from "../../internals/decorators";
 })
 export class NodeModule {
 	constructor(
-		@inject(NodeMachineFactory) private nodeMachineFactory: NodeMachineFactory
+		@inject(NodeMachineFactory)
+		public readonly createMachine: NodeMachineFactory
 	) {}
-
-	public createMachine() {
-		return this.nodeMachineFactory();
-	}
 
 	off() {}
 }

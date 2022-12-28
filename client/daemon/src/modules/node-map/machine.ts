@@ -1,7 +1,6 @@
 import { interfaces } from "inversify";
 import { over } from "ok-value-error-reason";
 import { ActorRefFrom, assign, createMachine } from "xstate";
-import { DaemonContainer } from "../../container";
 import * as Ports from "../../ports";
 import {
 	FindNearByNodesDocument,
@@ -19,7 +18,6 @@ export interface NodeMapMachineCtx {
 	nearbyNodes: NearbyNode[];
 	currentNodeID?: string;
 }
-
 
 export type NodeMapMachineEvents = SetNodeIDEvent;
 
@@ -127,9 +125,6 @@ export const createNodeMapMachine = (ctx: interfaces.Context) => () => {
 };
 
 export type NodeMapMachineFactory = ReturnType<typeof createNodeMapMachine>;
-
 export const NodeMapMachineFactory = Symbol("NodeMapMachineFactory");
 
 export type NodeMapMachine = ReturnType<NodeMapMachineFactory>;
-
-export type NodeMapActorRef = ActorRefFrom<NodeMapMachine>;

@@ -1,4 +1,6 @@
 import "reflect-metadata";
-export * as interfaces from "./interfaces";
+import "inversify";
+
 export * as Ports from "./ports";
+export * as Modules from "./modules";
 export * from "./bootstrap";

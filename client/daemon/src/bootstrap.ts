@@ -1,25 +1,47 @@
+import { Container, interfaces } from "inversify";
 import { interpret } from "xstate";
-import { inspect } from "@xstate/inspect";
-import { Container, inject, injectable } from "inversify";
-import { SendMessageModule } from "./modules/send-message";
-import { DaemonModule } from "./modules/daemon";
-import { NodeModule } from "./modules/node";
-import { NodeMapModule } from "./modules/node-map";
-import { getModuleMetadata } from "./internals/decorators";
-import { LocationModule } from "./modules/location";
-import { MessageModule } from "./modules/message";
+
+import { ActorCenterModule } from "./internals/actor-center";
 import { ContextModule } from "./internals/context-module";
+import { getModuleMetadata } from "./internals/decorators";
+import { GlobalMQModule } from "./internals/global-mq";
+import { DaemonMachineFactory } from "./modules/daemon/machine";
+import { DaemonModule } from "./modules/daemon/module";
+import { LocationModule } from "./modules/location/module";
+import { MessageModule } from "./modules/message/message";
+import { NodeMapModule } from "./modules/node-map/module";
+import { NodeModule } from "./modules/node/node";
+import { SendMessageModule } from "./modules/send-message/send-message";
 import { UploadModule } from "./modules/upload/upload";
+
+function addGlobal(planAndResolve: interfaces.Next): interfaces.Next {
+	return (args: interfaces.NextArgs) => {
+		let result = planAndResolve(args);
+
+		if (!(globalThis as any).$ebox) {
+			(globalThis as any).$ebox = [];
+		}
+
+		(globalThis as any).$ebox.push(result);
+
+		return result;
+	};
+}
 
 export class Boostrapper {
 	readonly container;
 
 	constructor() {
-		this.container = new Container();
+		this.container = new Container({
+			defaultScope: "Singleton",
+		});
+		this.container.applyMiddleware(addGlobal);
 	}
 
 	static readonly modules = [
 		ContextModule,
+		ActorCenterModule,
+		GlobalMQModule,
 		DaemonModule,
 		NodeModule,
 		NodeMapModule,
@@ -41,6 +63,11 @@ export class Boostrapper {
 
 	bootstrap() {
 		this.bindAll();
-		return this.container.resolve(DaemonModule);
+		const machine =
+			this.container.get<DaemonMachineFactory>(DaemonMachineFactory)();
+
+		return interpret(machine, {
+			devTools: true,
+		}).start();
 	}
 }
