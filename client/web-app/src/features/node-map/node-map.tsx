@@ -2,21 +2,21 @@ import * as React from "react";
 import { useActor, useSelector } from "@xstate/react";
 import { Daemon } from "../../state-machine";
 import { ActorRefFrom } from "xstate";
-import { interfaces } from "@ebox/daemon";
+import { Modules } from "@ebox/daemon";
 import { useMatchSelector } from "../../shared/hooks/use-suspend-selector";
 
 export type NodeMap = {};
 
 export const NodeMap = (props: NodeMap) => {
 	const nodeMapActor = useMatchSelector(
-		Daemon.actor,
+		Daemon,
 		"running",
 		(s) => s.context.nodeMapRef!
 	);
 
 	const nearbyNodes = useSelector(
 		nodeMapActor,
-		Daemon.NodeMap.selectNearbyNodes
+		Modules.NodeMap.selectNearbyNodes
 	);
 
 	if (!nearbyNodes) {

@@ -9,7 +9,7 @@ import { DaemonMachineFactory } from './modules/daemon/machine';
 import { DaemonModule } from './modules/daemon/module';
 import { LocationModule } from './modules/location/location';
 import { MessageModule } from './modules/message/message';
-import { NodeMapModule } from './modules/node-map/node-map';
+import { NodeMapModule } from './modules/node-map/module';
 import { NodeModule } from './modules/node/node';
 import { SendMessageModule } from './modules/send-message/send-message';
 import { UploadModule } from './modules/upload/upload';

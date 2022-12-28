@@ -88,7 +88,10 @@ export const createNodeMachine = (ctx: interfaces.Context) => () => {
 					},
 				},
 				registered: {
-					entry: ["spawnLocation", "spawnMessageMachine"],
+					entry: [
+						// "spawnLocation",
+						"spawnMessageMachine",
+					],
 					on: {
 						RESET_NODE: "resetting",
 					},

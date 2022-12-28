@@ -11,7 +11,9 @@ export default defineConfig(async ({ command, mode }) => {
 	const env = loadEnv(mode, EnvDir);
 
 	return {
-		plugins: [tsconfigPaths(), react()],
+		plugins: [tsconfigPaths({
+			root: resolve(__dirname, "../"),
+		}), react()],
 		root: resolve(__dirname, "../src"),
 		envDir: EnvDir,
 

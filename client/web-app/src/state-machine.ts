@@ -1,11 +1,9 @@
-import "./adapters";
+import './adapters';
 
-import { useActor, useSelector } from "@xstate/react";
-import React from "react";
-import { ActorRef, EventObject } from "xstate";
+import { inspect } from '@xstate/inspect';
+import React from 'react';
 
-import { Boostrapper } from "./container";
-import { inspect } from "@xstate/inspect";
+import { Boostrapper } from './container';
 
 inspect({
 	// options

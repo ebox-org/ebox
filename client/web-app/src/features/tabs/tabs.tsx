@@ -1,10 +1,8 @@
-import { useSelector } from "@xstate/react";
 import React from "react";
 import { Link } from "react-router-dom";
-import { ActorRefFrom } from "xstate";
-import { interfaces } from "@ebox/daemon";
-import { Daemon } from "../../state-machine";
+
 import { useMatchSelector } from "../../shared/hooks/use-suspend-selector";
+import { Daemon } from "../../state-machine";
 
 export type Tabs = {};
 
@@ -26,7 +24,7 @@ type Threads = {};
 
 function Threads({}: Threads) {
 	const nodeActor = useMatchSelector(
-		Daemon.actor,
+		Daemon,
 		"running",
 		(s) => s.context.nodeRef!
 	);
@@ -37,7 +35,8 @@ function Threads({}: Threads) {
 		(s) => s.context.messageRef!
 	);
 
-	const threads = useMatchSelector(messageRef, Daemon.Message.selectRecentThreads);
+	// const threads = useMatchSelector(messageRef, Daemon.Message.selectRecentThreads);
+	const threads: any[] = [];
 
 	const threadEls = threads.map((thread) => (
 		<>

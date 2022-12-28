@@ -12,8 +12,7 @@ import {
 	ActorCenterModule,
 } from "../../internals/actor-center";
 import * as Ports from "../../ports";
-import { NodeMapMachine } from "../node-map/machine";
-import { NodeMapModule } from "../node-map/node-map";
+import { NodeMapMachine, NodeMapMachineFactory } from "../node-map/machine";
 import { NodeMachine } from "../node/machine";
 import { NodeModule } from "../node/node";
 
@@ -117,7 +116,7 @@ export const createDaemonMachine = (ctx: interfaces.Context) => () => {
 				spawnNodeMapMachine: assign<DaemonMachineCtx>(() => {
 					return {
 						nodeMapRef: spawn(
-							ctx.container.get<NodeMapModule>(NodeMapModule).createMachine(),
+							ctx.container.get<NodeMapMachineFactory>(NodeMapMachineFactory)(),
 							"nodeMap"
 						),
 					};
@@ -144,6 +143,5 @@ export const createDaemonMachine = (ctx: interfaces.Context) => () => {
 
 export type DaemonMachineFactory = ReturnType<typeof createDaemonMachine>;
 export const DaemonMachineFactory = Symbol("DaemonMachineFactory");
-
 
 export type DaemonMachine = ReturnType<DaemonMachineFactory>;

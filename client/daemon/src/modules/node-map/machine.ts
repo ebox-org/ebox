@@ -19,7 +19,6 @@ export interface NodeMapMachineCtx {
 	currentNodeID?: string;
 }
 
-
 export type NodeMapMachineEvents = SetNodeIDEvent;
 
 export const createNodeMapMachine = (ctx: interfaces.Context) => () => {
@@ -126,9 +125,6 @@ export const createNodeMapMachine = (ctx: interfaces.Context) => () => {
 };
 
 export type NodeMapMachineFactory = ReturnType<typeof createNodeMapMachine>;
-
 export const NodeMapMachineFactory = Symbol("NodeMapMachineFactory");
 
 export type NodeMapMachine = ReturnType<NodeMapMachineFactory>;
-
-export type NodeMapActorRef = ActorRefFrom<NodeMapMachine>;

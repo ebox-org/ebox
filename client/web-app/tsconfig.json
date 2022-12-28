@@ -22,7 +22,7 @@
 		"baseUrl": "./src",
 		"paths": {
 			"@ebox/daemon": ["../../daemon/src"],
-			"@src/*": ["*"]
+			"@src/*": ["./*"]
 		}
 	},
 	"include": ["src"],
