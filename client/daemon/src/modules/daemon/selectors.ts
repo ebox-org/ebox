@@ -1,6 +1,6 @@
 import { StateFrom } from 'xstate';
 
-import { DaemonMachineFactory } from './machine';
+import { DaemonMachine } from './machine';
 
 export const selectActorCenter = (state: StateFrom<DaemonMachine>) => {
 	return state.context.actorCenterRef!;

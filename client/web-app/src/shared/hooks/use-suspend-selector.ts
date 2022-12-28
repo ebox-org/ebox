@@ -1,19 +1,7 @@
-import React from "react";
-import { useActor, useSelector } from "@xstate/react";
-import {
-	ActorRef,
-	EventObject,
-	Sender,
-	StateFrom,
-	EmittedFrom,
-	ResolveTypegenMeta,
-	Subscribable,
-	StateMachine,
-	StateValueFrom,
-	InterpreterFrom,
-	AnyActorRef,
-} from "xstate";
-import pDefer from "p-defer";
+import { useSelector } from '@xstate/react';
+import pDefer from 'p-defer';
+import React from 'react';
+import { ActorRef, Subscribable } from 'xstate';
 
 type SubscribableActorRef = ActorRef<any, any> & Subscribable<any>;
 
