@@ -8,7 +8,7 @@ import { GlobalMQModule } from "./internals/global-mq";
 import { DaemonMachineFactory } from "./modules/daemon/machine";
 import { DaemonModule } from "./modules/daemon/module";
 import { LocationModule } from "./modules/location/module";
-import { MessageModule } from "./modules/message/message";
+import { MessageModule } from "./modules/message/module";
 import { NodeMapModule } from "./modules/node-map/module";
 import { NodeModule } from "./modules/node/node";
 import { SendMessageModule } from "./modules/send-message/send-message";

@@ -1,26 +1,19 @@
-import { ActorRefFrom, assign, createMachine, send, spawn } from "xstate";
-import * as Ports from "../../ports";
 import { faker } from "@faker-js/faker";
-
-import {
-	useRegisterMutation,
-	RegisterDocument,
-	RegisterMutationVariables,
-	RegisterMutation,
-} from "./operations.generated";
 import { interfaces } from "inversify";
-import { type } from "os";
-import { SetNodeIDEvent } from "../../internals/common-event";
+import { ActorRefFrom, assign, createMachine, spawn } from "xstate";
+
 import { ActorCenterModule } from "../../internals/actor-center";
-import {
-	LocationMachine,
-	LocationMachineFactory,
-	LocationModule,
-} from "../location/module";
+import * as Ports from "../../ports";
+import { LocationMachine, LocationMachineFactory } from "../location/module";
+import { MessageWriterMachineFactory } from "../message";
 import { MessageRootMachine } from "../message/machine";
 import { SendMachine } from "../send-message/machine";
 import { SendMessageModule } from "../send-message/send-message";
-import { MessageModule } from "../message/message";
+import {
+	RegisterDocument,
+	RegisterMutation,
+	RegisterMutationVariables,
+} from "./operations.generated";
 
 export interface NodeMachineCtx {
 	nodeID?: string;
@@ -42,7 +35,7 @@ export type NodeMachineState = {
 
 const Key = "node-id";
 
-const MessageMachineID = "message";
+const MessageWriterMachineID = "message-writer";
 const SendMachineID = "send";
 const LocationMachineID = "location";
 
@@ -128,14 +121,14 @@ export const createNodeMachine = (ctx: interfaces.Context) => () => {
 				spawnMessageMachine: (ctx, _event) => {
 					logger.debug("spawning message machine");
 
-					const machine = container
-						.get<MessageModule>(MessageModule)
-						.createMachine(ctx.nodeID!);
+					const machine = container.get<MessageWriterMachineFactory>(
+						MessageWriterMachineFactory
+					)(ctx.nodeID!);
 
 					const actorCenter =
 						container.get<ActorCenterModule>(ActorCenterModule);
 
-					actorCenter.spawnActor(machine, MessageMachineID);
+					actorCenter.spawnActor(machine, MessageWriterMachineID);
 				},
 				spawnLocation: (ctx, event) => {
 					logger.debug("spawning location machine");

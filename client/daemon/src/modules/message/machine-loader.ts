@@ -15,13 +15,8 @@ import { sendParent } from "xstate/lib/actions";
 import { interfaces } from "inversify";
 import { ActorCenterModule } from "../../internals/actor-center";
 import { GlobalMQ } from "../../internals/global-mq";
+import { Message } from "./machine-list";
 
-export interface Message {
-	fromID: string;
-	messageID: string;
-	messageType: string;
-	content: string;
-}
 
 export interface MessageLoaderCtx {
 	nodeID: string;
