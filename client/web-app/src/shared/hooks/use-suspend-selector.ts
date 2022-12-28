@@ -1,7 +1,7 @@
-import { useSelector } from '@xstate/react';
-import pDefer from 'p-defer';
-import React from 'react';
-import { ActorRef, Subscribable } from 'xstate';
+import { useSelector } from "@xstate/react";
+import pDefer from "p-defer";
+import React from "react";
+import { ActorRef, Subscribable } from "xstate";
 
 type SubscribableActorRef = ActorRef<any, any> & Subscribable<any>;
 
@@ -11,6 +11,8 @@ type EmittedFromActorRef<TActor extends SubscribableActorRef> =
 type SelectorOfActorRef<TActor extends SubscribableActorRef, T> = (
 	state: EmittedFromActorRef<TActor>
 ) => T;
+
+const defaultSelector = (state: any) => state;
 
 function useSuspendSelector<TActor extends SubscribableActorRef>(
 	actorRef: TActor,
@@ -38,12 +40,23 @@ function useSuspendSelector(
 		return;
 	});
 
-	return useSelector(actorRef, selector as any);
+	const selectorFn = selector ?? defaultSelector;
+
+	return useSelector(actorRef, selectorFn as any);
 }
 
 type StateValueFrom<TActor extends SubscribableActorRef> = Parameters<
 	EmittedFromActorRef<TActor>["matches"]
 >[0];
+
+function useSuspendMatch<TActor extends SubscribableActorRef>(
+	actorRef: TActor,
+	readyState: StateValueFrom<TActor>
+): void {
+	useSuspendSelector(actorRef, (state) => {
+		return state.matches(readyState);
+	});
+}
 
 function useMatchSelector<TActor extends SubscribableActorRef>(
 	actorRef: TActor,
@@ -68,4 +81,4 @@ function useMatchSelector(
 	);
 }
 
-export { useSuspendSelector, useMatchSelector };
+export { useSuspendMatch, useSuspendSelector, useMatchSelector };

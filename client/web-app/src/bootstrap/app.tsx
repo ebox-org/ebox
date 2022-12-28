@@ -5,7 +5,10 @@ import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 
 import { Node } from "../features/node";
 import { NodeMap } from "../features/node-map";
-import { useMatchSelector } from "../shared/hooks/use-suspend-selector";
+import {
+	useMatchSelector,
+	useSuspendMatch,
+} from "../shared/hooks/use-suspend-selector";
 import { Daemon } from "../state-machine";
 
 const router = createBrowserRouter([
@@ -41,22 +44,14 @@ export function App() {
 type ReadyApp = { children?: React.ReactNode };
 
 function ReadyApp(props: ReadyApp) {
-	const nodeActor = useMatchSelector(Daemon, "running", (s) => {
-		return s.context.nodeRef!;
-	});
-
-	// const sendRef = useMatchSelector(
-	// 	nodeActor,
-	// 	"registered",
-	// 	(s) => s.context.sendRef!
-	// );
+	useSuspendMatch(Daemon, "running");
 
 	return (
 		<Grid2 container spacing={2} rowSpacing={1}>
-			<Grid2 lg={2}>
+			<Grid2 md={2}>
 				<Tabs />
 			</Grid2>
-			<Grid2 xs={12} lg={10}>
+			<Grid2 xs={12} md={10}>
 				<Outlet />
 			</Grid2>
 			{/* <Grid2 xs={12} lg={8}>
